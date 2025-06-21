@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface JSONField {
-    String name() default ""; // 反序列化字段名
-    String format() default ""; // 日期格式
+
+    String name() default "";
+
+    String format() default "";
 }

@@ -71,6 +71,7 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
         }
         return null;
     }
+
     public JSONArray getJSONArray(String key) {
         Object value = map.get(key);
         if (value instanceof JSONArray) {
@@ -249,11 +250,9 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
                     if (value instanceof Map && !Map.class.isAssignableFrom(fieldType)) {
                         JSONObject nestedJson = new JSONObject((Map<String, Object>) value);
                         value = nestedJson.toBean(fieldType);
-                    }
-                    else if (fieldType.isEnum() && value instanceof String) {
+                    } else if (fieldType.isEnum() && value instanceof String) {
                         value = JReflectionUtils.getEnumByName((Class<? extends Enum>) fieldType, (String) value);
-                    }
-                    else if (value != null && !fieldType.isAssignableFrom(value.getClass())) {
+                    } else if (value != null && !fieldType.isAssignableFrom(value.getClass())) {
                         if (fieldType == Integer.class || fieldType == int.class) {
                             value = this.getInteger(fieldName);
                         } else if (fieldType == Long.class || fieldType == long.class) {
@@ -296,11 +295,9 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
                     json.put(field.getName(), null);
                 } else if (value instanceof Number || value instanceof Boolean || value instanceof String) {
                     json.put(field.getName(), value);
-                }
-                else if (!value.getClass().isArray() && !(value instanceof Collection) && !(value instanceof Map)) {
+                } else if (!value.getClass().isArray() && !(value instanceof Collection) && !(value instanceof Map)) {
                     json.put(field.getName(), fromBean(value));
-                }
-                else if (value instanceof Collection) {
+                } else if (value instanceof Collection) {
                     List<Object> list = new ArrayList<>();
                     for (Object item : (Collection<?>) value) {
                         list.add(item instanceof String || item instanceof Number || item instanceof Boolean ? item : fromBean(item));
@@ -321,6 +318,7 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
     public JSONObject fromMap(Map<String, Object> map) {
         return new JSONObject(map);
     }
+
     private Map<String, Object> deepCopyMap(Map<String, Object> original) {
         return deepCopyMap(original, new IdentityHashMap<>());
     }
@@ -361,8 +359,10 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
         }
         return copy;
     }
+
     /**
      * 检查JSON对象是否包含指定键
+     *
      * @param key 要检查的键名
      * @return 如果包含该键则返回true，否则返回false
      */
@@ -372,6 +372,7 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
 
     /**
      * 检查JSON对象是否包含指定键且值不为null
+     *
      * @param key 要检查的键名
      * @return 如果包含该键且值不为null则返回true，否则返回false
      */

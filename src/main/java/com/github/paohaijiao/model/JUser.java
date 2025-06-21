@@ -31,8 +31,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JUser
-{
+public class JUser {
 
     private String name;
     private Integer age;

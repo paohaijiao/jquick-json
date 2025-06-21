@@ -1,9 +1,9 @@
 package com.github.paohaijiao;
 
-import com.paohaijiao.javelin.adaptor.JQuickAdaptor;
-import com.paohaijiao.javelin.exception.JAntlrExecutionException;
 import com.github.paohaijiao.executor.JSONExecutor;
 import com.github.paohaijiao.model.JsonResponse;
+import com.paohaijiao.javelin.adaptor.JQuickAdaptor;
+import com.paohaijiao.javelin.exception.JAntlrExecutionException;
 import com.paohaijiao.javelin.param.JContext;
 import com.paohaijiao.javelin.resource.JQuickReader;
 import com.paohaijiao.javelin.resource.impl.JQuickReSourceFileReader;
@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
 public class Main {
     public static void main(String[] args) {
         JContext jcontext = new JContext();
-        jcontext.put("name","paohaijiao");
+        jcontext.put("name", "paohaijiao");
         JSONExecutor executor = new JSONExecutor(jcontext);
         executor.addErrorListener(error -> {
         });
@@ -32,7 +32,8 @@ public class Main {
                     System.err.println(" - " + err.getMessage()));
         }
     }
-    public  String readFileFromClasspath(String fileName) {
+
+    public String readFileFromClasspath(String fileName) {
         StringBuilder result = new StringBuilder();
         try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(fileName);
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {

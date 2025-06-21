@@ -25,7 +25,7 @@ public interface JBeanMapper {
 
     public Map toMap();
 
-    public  JSONObject fromBean(Object bean);
+    public JSONObject fromBean(Object bean);
 
-    public  JSONObject fromMap(Map<String, Object> map);
+    public JSONObject fromMap(Map<String, Object> map);
 }

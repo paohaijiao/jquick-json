@@ -50,6 +50,7 @@ public class JSONSupport {
             throw new IllegalArgumentException("Invalid JSON string: must start with '{' or '['");
         }
     }
+
     public static JSONObject parseObject(String json) {
         if (json == null || !json.trim().startsWith("{")) {
             throw new IllegalArgumentException("Invalid JSON object string");
@@ -69,6 +70,7 @@ public class JSONSupport {
         }
         return result;
     }
+
     public static JSONArray parseArray(String json) {
         if (json == null || !json.trim().startsWith("[")) {
             throw new IllegalArgumentException("Invalid JSON array string");
@@ -89,6 +91,7 @@ public class JSONSupport {
         }
         return result;
     }
+
     public static String toJsonString(Object obj) {
         if (obj == null) {
             return "null";
@@ -128,6 +131,7 @@ public class JSONSupport {
             return "\"" + JSONObject.escape(obj.toString()) + "\"";
         }
     }
+
     public static JSONObject merge(JSONObject first, JSONObject second) {
         JSONObject result = new JSONObject();
         if (first != null) {
@@ -149,6 +153,7 @@ public class JSONSupport {
         return (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
                 (trimmed.startsWith("[") && trimmed.endsWith("]"));
     }
+
     public static String prettyPrint(String json, int indentSpaces) {
         if (!isValidJson(json)) {
             return json;
@@ -187,6 +192,7 @@ public class JSONSupport {
 
         return sb.toString();
     }
+
     private static Object parseValue(String valueStr) {
         if (valueStr.startsWith("\"") && valueStr.endsWith("\"")) {
             return unescapeJsonString(valueStr.substring(1, valueStr.length() - 1));
@@ -285,7 +291,7 @@ public class JSONSupport {
             throw new IllegalArgumentException("Invalid JSON entry: " + entry);
         }
 
-        return new String[] {
+        return new String[]{
                 entry.substring(0, colonPos),
                 entry.substring(colonPos + 1)
         };

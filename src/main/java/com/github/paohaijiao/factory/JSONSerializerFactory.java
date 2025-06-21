@@ -15,10 +15,10 @@
  */
 package com.github.paohaijiao.factory;
 
-import com.paohaijiao.javelin.param.JContext;
 import com.github.paohaijiao.serializer.JDefaultJSONSerializer;
-import com.github.paohaijiao.serializer.JSONSerializer;
 import com.github.paohaijiao.serializer.JQuickJSONSerializer;
+import com.github.paohaijiao.serializer.JSONSerializer;
+import com.paohaijiao.javelin.param.JContext;
 
 /**
  * packageName com.paohaijiao.javelin.factory
@@ -40,6 +40,7 @@ public class JSONSerializerFactory {
     public static JSONSerializer createSerializer() {
         return new JDefaultJSONSerializer();
     }
+
     public static JSONSerializer createJQuickSerializer(JContext context) {
         return new JQuickJSONSerializer(context);
     }

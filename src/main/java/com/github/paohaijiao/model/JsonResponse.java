@@ -30,15 +30,16 @@ public class JsonResponse {
     public JsonResponse getData() {
         JsonResponse response = new JsonResponse();
         if (data instanceof JSONObject) {
-            response.setData((JSONObject)data);
+            response.setData((JSONObject) data);
             response.setType("object");
         } else {
-            List<JSONObject> list= JBeanCopyUtils.copyList((List)data,JSONObject.class);
+            List<JSONObject> list = JBeanCopyUtils.copyList((List) data, JSONObject.class);
             response.setData(new JSONArray(list));
             response.setType("array");
         }
         return response;
     }
+
     @Override
     public String toString() {
         return "{" +

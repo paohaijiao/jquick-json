@@ -75,7 +75,7 @@ public class JSONSupportTest {
         JSONArray array = JSONSupport.parseArray(json);
         assertEquals(4, array.size());
         assertEquals("John", array.getJSONObject(0).getString("name"));
-        assertEquals(42,(int)array.getInteger(1));
+        assertEquals(42, (int) array.getInteger(1));
         assertTrue(array.getBoolean(2));
         assertNull(array.get(3));
     }

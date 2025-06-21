@@ -1,15 +1,15 @@
 package com.jquick.test;
 
-import com.paohaijiao.javelin.adaptor.JQuickAdaptor;
-import com.paohaijiao.javelin.exception.JAntlrExecutionException;
 import com.github.paohaijiao.executor.JSONExecutor;
 import com.github.paohaijiao.factory.JSONSerializerFactory;
 import com.github.paohaijiao.model.JUser;
 import com.github.paohaijiao.model.JsonResponse;
+import com.github.paohaijiao.serializer.JSONSerializer;
+import com.paohaijiao.javelin.adaptor.JQuickAdaptor;
+import com.paohaijiao.javelin.exception.JAntlrExecutionException;
 import com.paohaijiao.javelin.param.JContext;
 import com.paohaijiao.javelin.resource.JQuickReader;
 import com.paohaijiao.javelin.resource.impl.JQuickReSourceFileReader;
-import com.github.paohaijiao.serializer.JSONSerializer;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -22,9 +22,10 @@ public class JQuickJSonTest {
     @Ignore
     public void test1() throws IOException {
         JContext jcontext = new JContext();
-        jcontext.put("name","paohaijiao");
+        jcontext.put("name", "paohaijiao");
         JSONExecutor executor = new JSONExecutor(jcontext);
-        executor.addErrorListener(error -> {});
+        executor.addErrorListener(error -> {
+        });
         try {
             JQuickReader fileReader = new JQuickReSourceFileReader("rule.txt");
             JQuickAdaptor context = new JQuickAdaptor(fileReader);
@@ -36,12 +37,13 @@ public class JQuickJSonTest {
             e.getErrors().forEach(err ->
                     System.err.println(" - " + err.getMessage()));
         }
- }
+    }
+
     @Test
     @Ignore
     public void test2() throws IOException {
         JContext jcontext = new JContext();
-        jcontext.put("name","paohaijiao");
+        jcontext.put("name", "paohaijiao");
         JSONExecutor executor = new JSONExecutor(jcontext);
         executor.addErrorListener(error -> {
         });
@@ -57,6 +59,7 @@ public class JQuickJSonTest {
                     System.err.println(" - " + err.getMessage()));
         }
     }
+
     @Test
     @Ignore
     public void test3() throws IOException {

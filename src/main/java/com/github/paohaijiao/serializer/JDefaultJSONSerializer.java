@@ -17,8 +17,8 @@ package com.github.paohaijiao.serializer;
 
 import com.github.paohaijiao.model.JSONArray;
 import com.github.paohaijiao.model.JSONObject;
-import com.paohaijiao.javelin.param.JContext;
 import com.github.paohaijiao.support.JSONSupport;
+import com.paohaijiao.javelin.param.JContext;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -32,14 +32,17 @@ import java.util.Collection;
  * @date 2025/6/20
  * @description
  */
-public class JDefaultJSONSerializer implements JSONSerializer{
+public class JDefaultJSONSerializer implements JSONSerializer {
     private JContext context;
+
     public JDefaultJSONSerializer() {
-        context=new JContext();
+        context = new JContext();
     }
+
     public JDefaultJSONSerializer(JContext context) {
-        context=context;
+        context = context;
     }
+
     @Override
     public String serialize(Object object) {
         if (object == null) return "null";
@@ -73,6 +76,7 @@ public class JDefaultJSONSerializer implements JSONSerializer{
         }
         return deserializePrimitive(json, clazz);
     }
+
     private String quoteString(String str) {
         return "\"" + JSONObject.escape(str) + "\"";
     }
@@ -126,6 +130,7 @@ public class JDefaultJSONSerializer implements JSONSerializer{
             throw new RuntimeException("Failed to create collection", e);
         }
     }
+
     private <T> T deserializePrimitive(String json, Class<T> clazz) {
         if (clazz == String.class) {
             return clazz.cast(unquoteString(json));

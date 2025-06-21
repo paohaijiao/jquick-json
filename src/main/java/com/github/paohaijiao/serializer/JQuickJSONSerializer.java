@@ -15,15 +15,12 @@
  */
 package com.github.paohaijiao.serializer;
 
-import com.paohaijiao.javelin.adaptor.JQuickAdaptor;
 import com.github.paohaijiao.executor.JSONExecutor;
 import com.github.paohaijiao.model.JSONArray;
 import com.github.paohaijiao.model.JSONObject;
 import com.github.paohaijiao.model.JsonResponse;
-import com.paohaijiao.javelin.param.JContext;
-import com.paohaijiao.javelin.resource.JQuickReader;
-import com.paohaijiao.javelin.resource.impl.JQuickReSourceFileReader;
 import com.github.paohaijiao.support.JSONSupport;
+import com.paohaijiao.javelin.param.JContext;
 import com.paohaijiao.javelin.util.JStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -78,20 +75,14 @@ public class JQuickJSONSerializer implements JSONSerializer {
         if (json.startsWith("{")) {
             JSONExecutor executor = new JSONExecutor(context);
             executor.addErrorListener(error -> {});
-            JQuickReader fileReader = new JQuickReSourceFileReader("rule.txt");
-            JQuickAdaptor context = new JQuickAdaptor(fileReader);
-            System.out.println(context.getRuleContent());
-            JsonResponse jsonObject = executor.execute(context.getRuleContent());
-            JsonResponse response= jsonObject.getData();
+            JsonResponse jsonObject = executor.execute(json);
+            JsonResponse response = jsonObject.getData();
         }
         if (json.startsWith("[")) {
             JSONExecutor executor = new JSONExecutor(context);
             executor.addErrorListener(error -> {});
-            JQuickReader fileReader = new JQuickReSourceFileReader("rule.txt");
-            JQuickAdaptor context = new JQuickAdaptor(fileReader);
-            System.out.println(context.getRuleContent());
-            JsonResponse jsonObject = executor.execute(context.getRuleContent());
-            JsonResponse response= jsonObject.getData();
+            JsonResponse jsonObject = executor.execute(json);
+            JsonResponse response = jsonObject.getData();
         }
         return deserializePrimitive(json, clazz);
     }

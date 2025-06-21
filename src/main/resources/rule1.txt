@@ -1,0 +1,13 @@
+[{
+  "name": "示例JSON",
+  "version": "1.0",
+  "description": "这是一个示例JSON文件，用于演示基本结构。",
+  "author": "你的名字",
+  "features": ["简单", "易读", "可扩展"],
+  "metadata": {
+    "created": "2023-10-01",
+    "modified": "2023-10-02"
+  },
+  "active": ${name},
+  "count": 42
+}]

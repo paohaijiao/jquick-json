@@ -24,14 +24,18 @@ import com.github.paohaijiao.parser.JQuickJSONParser;
 import com.paohaijiao.javelin.exception.JAssert;
 import com.paohaijiao.javelin.param.JContext;
 import com.paohaijiao.javelin.util.JBeanCopyUtils;
+import com.paohaijiao.javelin.util.JObjectConverter;
 import com.paohaijiao.javelin.util.JStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class JSONCommonVisitor extends JQuickJSONBaseVisitor {
+public class JSONCommonVisitor extends JSONCoreVisitor {
 
     private JContext context;
 
@@ -44,18 +48,18 @@ public class JSONCommonVisitor extends JQuickJSONBaseVisitor {
     }
 
     @Override
-    public JsonResponse visitJson(JQuickJSONParser.JsonContext ctx) {
+    public Object visitJson(JQuickJSONParser.JsonContext ctx) {
         JsonResponse response = new JsonResponse();
         Object result = null;
         if (null != ctx.value()) {
             result = visitValue(ctx.value());
-            if (result instanceof JSONObject) {
-                response.setData((JSONObject) result);
-                response.setType("object");
-            } else {
-                List<JSONObject> list = JBeanCopyUtils.copyList((List) result, JSONObject.class);
-                response.setData(new JSONArray(list));
-                response.setType("array");
+            if (result instanceof JSONObject) {// object
+                return (JSONObject) result;
+            } else if (result instanceof List) {//list
+              List<?> list = JObjectConverter.assign( result, List.class);
+              return new JSONArray(list);
+            }else{//native
+                return result;
             }
         }
         return response;
@@ -86,6 +90,18 @@ public class JSONCommonVisitor extends JQuickJSONBaseVisitor {
             Object obj = visitVariable(ctx.variable());
             return obj;
         }
+        if (null != ctx.float_()) {
+            Object obj = visitFloat(ctx.float_());
+            return obj;
+        }
+        if (null != ctx.double_()) {
+            Object obj = visitDouble(ctx.double_());
+            return obj;
+        }
+        if (null != ctx.date()) {
+            Object obj = visit(ctx.date());
+            return obj;
+        }
         return null;
     }
 
@@ -96,6 +112,48 @@ public class JSONCommonVisitor extends JQuickJSONBaseVisitor {
             return context.get(str);
         }
         JAssert.throwNewException("invalid variable");
+        return null;
+    }
+    @Override
+    public Float visitFloat(JQuickJSONParser.FloatContext ctx) {
+        if (ctx.NUMBER() != null) {
+            String str = ctx.NUMBER().getText();
+            return Float.parseFloat(str);
+        }
+        JAssert.throwNewException("invalid variable");
+        return null;
+    }
+    @Override
+    public Double visitDouble(JQuickJSONParser.DoubleContext ctx) {
+        if (ctx.NUMBER() != null) {
+            String str = ctx.NUMBER().getText();
+            return Double.parseDouble(str);
+        }
+        JAssert.throwNewException("invalid variable");
+        return null;
+    }
+
+    @Override
+    public Date visitDate(JQuickJSONParser.DateContext ctx) {
+        if(ctx.DATE() != null) {
+            String date=trimDateSplit(ctx.DATE().getText());
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMdd");
+            try {
+                return sdf.parse(date);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }else if(ctx.DATETIMETYPE()!=null){
+            String datetime = trimDateSplit(ctx.DATETIMETYPE().getText());
+            String newDate=datetime.replace("T","");
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHH:mm:ss");
+            try {
+                return sdf.parse(newDate);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        JAssert.throwNewException("invalid date");
         return null;
     }
 
@@ -113,7 +171,6 @@ public class JSONCommonVisitor extends JQuickJSONBaseVisitor {
         for (JQuickJSONParser.ValueContext value : ctx.value()) {
             Object object = visitValue(value);
             array.add(object);
-
         }
         return array;
     }

@@ -1,4 +1,4 @@
-///*
+package com.github.paohaijiao; ///*
 // * Licensed under the Apache License, Version 2.0 (the "License");
 // * you may not use this file except in compliance with the License.
 // * You may obtain a copy of the License at
@@ -13,7 +13,7 @@
 // *
 // * Copyright (c) [2025-2099] Martin (goudingcheng@gmail.com)
 // */
-//package com.jquick.test;
+//package com.github.paohaijiao.test;
 //
 //import com.github.paohaijiao.model.JSONArray;
 //import com.github.paohaijiao.model.JSONObject;

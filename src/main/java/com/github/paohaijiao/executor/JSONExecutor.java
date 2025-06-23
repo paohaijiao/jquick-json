@@ -15,7 +15,6 @@
  */
 package com.github.paohaijiao.executor;
 
-import com.github.paohaijiao.model.JsonResponse;
 import com.github.paohaijiao.parser.JQuickJSONLexer;
 import com.github.paohaijiao.parser.JQuickJSONParser;
 import com.github.paohaijiao.visitor.JSONCommonVisitor;
@@ -27,7 +26,7 @@ import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.TokenStream;
 
-public class JSONExecutor extends JAbstractAntlrExecutor<String, JsonResponse> {
+public class JSONExecutor extends JAbstractAntlrExecutor<String, Object> {
     private JContext context;
 
     public JSONExecutor() {
@@ -49,11 +48,11 @@ public class JSONExecutor extends JAbstractAntlrExecutor<String, JsonResponse> {
     }
 
     @Override
-    protected JsonResponse parse(Parser parser) throws JAntlrExecutionException {
+    protected Object parse(Parser parser) throws JAntlrExecutionException {
         JQuickJSONParser calcParser = (JQuickJSONParser) parser;
         JQuickJSONParser.JsonContext tree = calcParser.json();
         JSONCommonVisitor visitor = new JSONCommonVisitor(context);
-        JsonResponse response = visitor.visitJson(tree);
+        Object response = visitor.visitJson(tree);
         return response;
     }
 }

@@ -13,7 +13,7 @@
  *
  * Copyright (c) [2025-2099] Martin (goudingcheng@gmail.com)
  */
-package com.github.paohaijiao.serializer;
+package com.github.paohaijiao.serializer.impl;
 
 import com.github.paohaijiao.executor.JSONExecutor;
 import com.github.paohaijiao.model.JSONArray;
@@ -106,7 +106,7 @@ public class JQuickJSONSerializer implements JSONSerializer {
         try {
             Object result = executor.execute(json);
             JConsole console = new JConsole();
-            console.log(JLogLevel.INFO, "parse result:" + result);
+            console.log(JLogLevel.INFO,"parse result:"+result);
             return clazz.cast(result);
         } catch (JAntlrExecutionException e) {
             System.err.println("解析失败: " + e.getMessage());
@@ -187,8 +187,7 @@ public class JQuickJSONSerializer implements JSONSerializer {
         }
         throw new IllegalArgumentException("Unsupported type: " + clazz.getName());
     }
-
-    private Date getDate(String date) {
+    private Date getDate(String date){
         String[] possibleDateFormats = {
                 "yyyy-MM-dd", "dd/MM/yyyy", "MM-dd-yyyy",
                 "yyyy MM dd", "yyyy.MM.dd", "MMM dd, yyyy"
@@ -201,7 +200,7 @@ public class JQuickJSONSerializer implements JSONSerializer {
         }
         return data;
     }
-
+    
     private Object convertValue(Object value, Class<?> targetType) {
         if (value == null) return null;
         if (targetType.isInstance(value)) return value;
@@ -210,4 +209,6 @@ public class JQuickJSONSerializer implements JSONSerializer {
         }
         return deserializePrimitive(value.toString(), targetType);
     }
+
+
 }

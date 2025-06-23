@@ -15,6 +15,12 @@
  */
 package com.github.paohaijiao.model;
 
+import com.github.paohaijiao.executor.JSONExecutor;
+import com.paohaijiao.javelin.console.JConsole;
+import com.paohaijiao.javelin.enums.JLogLevel;
+import com.paohaijiao.javelin.exception.JAntlrExecutionException;
+import com.paohaijiao.javelin.util.JObjectConverter;
+
 import java.util.*;
 
 public class JSONArray implements List<Object> {
@@ -195,7 +201,6 @@ public class JSONArray implements List<Object> {
         return list.subList(fromIndex, toIndex);
     }
 
-    // 转换为JSON字符串
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -218,6 +223,25 @@ public class JSONArray implements List<Object> {
         }
         sb.append("]");
         return sb.toString();
+    }
+    public static JSONArray parseJSONArray(String json) {
+        JSONExecutor executor = new JSONExecutor();
+        executor.addErrorListener(error -> {
+            System.err.printf("错误: 行%d:%d - %s%n", error.getLine(), error.getCharPosition(), error.getMessage());
+            System.err.println("规则栈: " + error.getRuleStack());
+        });
+        try {
+            Object result = executor.execute(json);
+            JConsole console = new JConsole();
+            console.log(JLogLevel.INFO,"parse result:"+result);
+            List<?> list= JObjectConverter.assign(result, List.class);
+            return new JSONArray(list);
+        } catch (JAntlrExecutionException e) {
+            System.err.println("解析失败: " + e.getMessage());
+            e.getErrors().forEach(err ->
+                    System.err.println(" - " + err.getMessage()));
+        }
+        return new JSONArray();
     }
 
 }

@@ -37,60 +37,6 @@ public class JSONSupport {
 
     private static final Pattern NUMBER_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?");
 
-    public static Object parse(String json) {
-        if (json == null || json.trim().isEmpty()) {
-            throw new IllegalArgumentException("JSON string cannot be null or empty");
-        }
-        String trimmed = json.trim();
-        if (trimmed.startsWith("{")) {
-            return parseObject(trimmed);
-        } else if (trimmed.startsWith("[")) {
-            return parseArray(trimmed);
-        } else {
-            throw new IllegalArgumentException("Invalid JSON string: must start with '{' or '['");
-        }
-    }
-
-    public static JSONObject parseObject(String json) {
-        if (json == null || !json.trim().startsWith("{")) {
-            throw new IllegalArgumentException("Invalid JSON object string");
-        }
-        String content = json.trim().substring(1, json.length() - 1).trim();
-        if (content.isEmpty()) {
-            return new JSONObject();
-        }
-        JSONObject result = new JSONObject();
-        List<String> entries = splitJsonEntries(content);
-        for (String entry : entries) {
-            String[] kv = splitKeyValue(entry);
-            String key = unescapeJsonString(kv[0].trim().replaceAll("^\"|\"$", ""));
-            String valueStr = kv[1].trim();
-            Object value = parseValue(valueStr);
-            result.put(key, value);
-        }
-        return result;
-    }
-
-    public static JSONArray parseArray(String json) {
-        if (json == null || !json.trim().startsWith("[")) {
-            throw new IllegalArgumentException("Invalid JSON array string");
-        }
-        String content = json.trim().substring(1, json.length() - 1).trim();
-        if (content.isEmpty()) {
-            return new JSONArray();
-        }
-        JSONArray result = new JSONArray();
-        List<String> elements = splitJsonElements(content);
-        for (String element : elements) {
-            Object value = parseValue(element.trim());
-            if (value instanceof JSONObject) {
-                result.add((JSONObject) value);
-            } else {
-                result.add(value);
-            }
-        }
-        return result;
-    }
 
     public static String toJsonString(Object obj) {
         if (obj == null) {
@@ -193,33 +139,6 @@ public class JSONSupport {
         return sb.toString();
     }
 
-    private static Object parseValue(String valueStr) {
-        if (valueStr.startsWith("\"") && valueStr.endsWith("\"")) {
-            return unescapeJsonString(valueStr.substring(1, valueStr.length() - 1));
-        } else if (valueStr.equals("true")) {
-            return true;
-        } else if (valueStr.equals("false")) {
-            return false;
-        } else if (valueStr.equals("null")) {
-            return null;
-        } else if (valueStr.startsWith("{") && valueStr.endsWith("}")) {
-            return parseObject(valueStr);
-        } else if (valueStr.startsWith("[") && valueStr.endsWith("]")) {
-            return parseArray(valueStr);
-        } else if (NUMBER_PATTERN.matcher(valueStr).matches()) {
-            try {
-                if (valueStr.contains(".")) {
-                    return Double.parseDouble(valueStr);
-                } else {
-                    return Long.parseLong(valueStr);
-                }
-            } catch (NumberFormatException e) {
-                return valueStr;
-            }
-        } else {
-            return valueStr;
-        }
-    }
 
     private static List<String> splitJsonEntries(String content) {
         List<String> entries = new ArrayList<>();
@@ -310,6 +229,112 @@ public class JSONSupport {
     private static void appendIndent(StringBuilder sb, int indent, int indentSpaces) {
         for (int i = 0; i < indent * indentSpaces; i++) {
             sb.append(" ");
+        }
+    }
+
+    public static Object[] parseString(String content, int index) {
+        StringBuilder sb = new StringBuilder();
+        boolean escape = false;
+        index++;
+        while (index < content.length()) {
+            char c = content.charAt(index);
+            if (escape) {
+                switch (c) {
+                    case '"':
+                        sb.append('"');
+                        break;
+                    case '\\':
+                        sb.append('\\');
+                        break;
+                    case '/':
+                        sb.append('/');
+                        break;
+                    case 'b':
+                        sb.append('\b');
+                        break;
+                    case 'f':
+                        sb.append('\f');
+                        break;
+                    case 'n':
+                        sb.append('\n');
+                        break;
+                    case 'r':
+                        sb.append('\r');
+                        break;
+                    case 't':
+                        sb.append('\t');
+                        break;
+                    case 'u':
+                        if (index + 4 < content.length()) {
+                            String hex = content.substring(index + 1, index + 5);
+                            sb.append((char) Integer.parseInt(hex, 16));
+                            index += 4;
+                        }
+                        break;
+                    default:
+                        sb.append(c);
+                }
+                escape = false;
+            } else if (c == '"') {
+                index++;
+                return new Object[]{sb.toString(), index};
+            } else if (c == '\\') {
+                escape = true;
+            } else {
+                sb.append(c);
+            }
+            index++;
+        }
+        throw new IllegalArgumentException("Unterminated string");
+    }
+
+    public static Object[] parseObject(String content, int index) {
+        int start = index;
+        int braceCount = 1;
+        index++; // 跳过开始的{
+        while (index < content.length()) {
+            char c = content.charAt(index);
+            if (c == '"') {
+                // 跳过字符串内容
+                Object[] stringResult = parseString(content, index);
+                index = (int) stringResult[1];
+            } else if (c == '{') {
+                braceCount++;
+            } else if (c == '}') {
+                braceCount--;
+                if (braceCount == 0) {
+                    index++; // 跳过结束的}
+                    String objectStr = content.substring(start, index);
+                    return new Object[]{JSONObject.parseObject(objectStr), index};
+                }
+            }
+            index++;
+        }
+        throw new IllegalArgumentException("Unterminated object");
+    }
+
+    public static Object[] parseNumber(String content, int index) {
+        int start = index;
+        while (index < content.length()) {
+            char c = content.charAt(index);
+            if (!(Character.isDigit(c) || c == '-' || c == '+' || c == 'e' || c == 'E' || c == '.')) {
+                break;
+            }
+            index++;
+        }
+        String numStr = content.substring(start, index);
+        try {
+            if (numStr.contains(".")) {
+                return new Object[]{Double.parseDouble(numStr), index};
+            } else {
+                long longValue = Long.parseLong(numStr);
+                if (longValue >= Integer.MIN_VALUE && longValue <= Integer.MAX_VALUE) {
+                    return new Object[]{(int) longValue, index};
+                }
+                return new Object[]{longValue, index};
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid number: " + numStr);
         }
     }
 }

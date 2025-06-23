@@ -15,14 +15,22 @@
  */
 package com.github.paohaijiao.model;
 
+import com.github.paohaijiao.anno.JSONField;
+import com.github.paohaijiao.anno.JSONIgnore;
 import com.github.paohaijiao.mapper.JBeanMapper;
+import com.github.paohaijiao.mapper.JNativeFormatMapper;
+import com.github.paohaijiao.mapper.JNativeMapper;
+import com.paohaijiao.javelin.exception.JAssert;
 import com.paohaijiao.javelin.util.JReflectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class JSONObject implements Map<String, Object>, JBeanMapper {
-    private final Map<String, Object> map;
+public class JSONObject extends JSONBaseObject implements Map<String, Object>, JNativeFormatMapper, JNativeMapper,JBeanMapper {
 
     public JSONObject() {
         this.map = new LinkedHashMap<>();
@@ -35,64 +43,124 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
     public JSONObject(Map<String, Object> map) {
         this.map = new LinkedHashMap<>(map);
     }
-
+    @Override
     public String getString(String key) {
         Object value = map.get(key);
         return value == null ? null : value.toString();
     }
-
+    @Override
+    public String getString(String format, Object value) {
+        String formatString = String.format(format, value);
+        return formatString;
+    }
+    @Override
     public Integer getInteger(String key) {
         Object value = map.get(key);
         return value == null ? null : Integer.valueOf(value.toString());
     }
-
+    @Override
+    public String getInteger(String format, Object value) {
+            DecimalFormat df = new DecimalFormat(format);
+            Integer number=Integer.valueOf(value.toString());
+            String formatted = df.format(number);
+            return formatted;
+    }
+    @Override
     public Long getLong(String key) {
         Object value = map.get(key);
         return value == null ? null : Long.valueOf(value.toString());
     }
-
+    @Override
+    public String getLong(String format, Object value) {
+            DecimalFormat df = new DecimalFormat(format);
+            Integer number=Integer.valueOf(value.toString());
+            String formatted = df.format(number);
+            return formatted;
+    }
+    @Override
     public Double getDouble(String key) {
         Object value = map.get(key);
         return value == null ? null : Double.valueOf(value.toString());
     }
+    @Override
+    public String getDouble(String format,Object value) {
 
+            DecimalFormat df = new DecimalFormat(format);
+            Integer number=Integer.valueOf(value.toString());
+            String formatted = df.format(number);
+            return formatted;
+    }
+    @Override
     public Boolean getBoolean(String key) {
         Object value = map.get(key);
         return value == null ? null : Boolean.valueOf(value.toString());
     }
-
-    public JSONObject getJSONObject(String key) {
+    @Override
+    public String getBoolean(String format, Object value) {
+        return Boolean.valueOf(value.toString())+"";
+    }
+    @Override
+    public Date getDate(String key) {
         Object value = map.get(key);
-        if (value instanceof JSONObject) {
-            return (JSONObject) value;
+        if(null==value){
+            return null;
+        }else if(value instanceof Date){
+            return (Date)value;
         }
-        if (value instanceof Map) {
-            return new JSONObject((Map<String, Object>) value);
+        JAssert.throwNewException("invalid date type");
+        return null;
+    }
+
+
+    @Override
+    public String getDate(String format,  Object value) {
+        Date d= (Date)value;
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(d);
+    }
+    @Override
+    public BigDecimal getBigDecimal(String key) {
+        Object value = map.get(key);
+        if(null==value){
+            return null;
+        }else if(value instanceof BigDecimal){
+            return (BigDecimal)value;
+        }
+        JAssert.throwNewException("invalid BigDecimal type");
+        return null;
+    }
+
+
+
+    @Override
+    public String getBigDecimal(String format, Object value) {
+        if(value instanceof BigDecimal){
+            BigDecimal d= (BigDecimal)value;
+            DecimalFormat df= new DecimalFormat(format);
+            return df.format(d);
+        }
+        return null;
+    }
+    @Override
+    public Float getFloat(String key) {
+        Object value = map.get(key);
+        if(null==value){
+            return null;
+        }else if(value instanceof Float){
+            return (Float)value;
+        }
+        return null;
+    }
+    @Override
+    public String getFloat(String format, Object value) {
+        if(value instanceof Float){
+            Float d= (Float)value;
+            String formatted = String.format(format, d);
+            return formatted;
         }
         return null;
     }
 
-    public JSONArray getJSONArray(String key) {
-        Object value = map.get(key);
-        if (value instanceof JSONArray) {
-            return (JSONArray) value;
-        }
-        if (value instanceof List) {
-            List<?> list = (List<?>) value;
-            JSONArray jsonArray = new JSONArray();
-            for (Object item : list) {
-                if (item instanceof Map) {
-                    jsonArray.add(new JSONObject((Map<String, Object>) item));
-                } else {
-                    JSONObject wrapper = new JSONObject();
-                    wrapper.put("value", item);
-                    jsonArray.add(wrapper);
-                }
-            }
-            return jsonArray;
-        }
-        return null;
-    }
 
     @Override
     public int size() {
@@ -159,7 +227,7 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         boolean first = true;
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
+        for (Entry<String, Object> entry : map.entrySet()) {
             if (!first) {
                 sb.append(",");
             }
@@ -180,62 +248,7 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
         return sb.toString();
     }
 
-    // 简单的字符串转义
-    public static String escape(String s) {
-        if (s == null) return null;
-        return s.replace("\"", "\\\"")
-                .replace("\\", "\\\\")
-                .replace("\b", "\\b")
-                .replace("\f", "\\f")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\t", "\\t");
-    }
 
-    public static JSONObject parseObject(String json) {
-        JSONObject obj = new JSONObject();
-        String content = json.trim().substring(1, json.length() - 1);
-        String[] entries = content.split(",");
-        for (String entry : entries) {
-            String[] kv = entry.split(":", 2);
-            String key = kv[0].trim().replaceAll("^\"|\"$", "");
-            String value = kv[1].trim();
-            if (value.startsWith("\"") && value.endsWith("\"")) {
-                obj.put(key, value.substring(1, value.length() - 1));
-            } else if (value.equals("true") || value.equals("false")) {
-                obj.put(key, Boolean.valueOf(value));
-            } else if (value.equals("null")) {
-                obj.put(key, null);
-            } else {
-                try {
-                    obj.put(key, Long.valueOf(value));
-                } catch (NumberFormatException e) {
-                    try {
-                        obj.put(key, Double.valueOf(value));
-                    } catch (NumberFormatException e2) {
-                        obj.put(key, value);
-                    }
-                }
-            }
-        }
-        return obj;
-    }
-
-    public static String toJSONString(Object obj) {
-        if (obj == null) {
-            return "null";
-        }
-        if (obj instanceof JSONObject) {
-            return obj.toString();
-        }
-        if (obj instanceof Map) {
-            return new JSONObject((Map<String, Object>) obj).toString();
-        }
-        if (obj instanceof String) {
-            return "\"" + obj.toString() + "\"";
-        }
-        return obj.toString();
-    }
 
     @Override
     public <T> T toBean(Class<T> t) {
@@ -243,8 +256,19 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
             T instance = JReflectionUtils.newInstance(t);
             List<Field> fields = JReflectionUtils.getAllFields(t);
             for (Field field : fields) {
+                JSONIgnore ignore=field.getAnnotation(JSONIgnore.class);
+                if(ignore != null) {
+                    continue;
+                }
                 String fieldName = field.getName();
                 if (this.containsKey(fieldName)) {
+                    JSONField jsonField=field.getAnnotation(JSONField.class);
+                    String format =null;
+                    if(jsonField != null) {
+                        if(fieldName.equals(jsonField.name())){
+                            format=jsonField.format();
+                        }
+                    }
                     Object value = this.get(fieldName);
                     Class<?> fieldType = field.getType();
                     if (value instanceof Map && !Map.class.isAssignableFrom(fieldType)) {
@@ -253,17 +277,12 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
                     } else if (fieldType.isEnum() && value instanceof String) {
                         value = JReflectionUtils.getEnumByName((Class<? extends Enum>) fieldType, (String) value);
                     } else if (value != null && !fieldType.isAssignableFrom(value.getClass())) {
-                        if (fieldType == Integer.class || fieldType == int.class) {
-                            value = this.getInteger(fieldName);
-                        } else if (fieldType == Long.class || fieldType == long.class) {
-                            value = this.getLong(fieldName);
-                        } else if (fieldType == Double.class || fieldType == double.class) {
-                            value = this.getDouble(fieldName);
-                        } else if (fieldType == Boolean.class || fieldType == boolean.class) {
-                            value = this.getBoolean(fieldName);
-                        } else if (fieldType == String.class) {
-                            value = this.getString(fieldName);
-                        }
+                       if(format==null){
+                           value = getNativeValue(fieldName,fieldType,value);
+                       }else{
+                           value = getNativeForMatValue(fieldName,fieldType,value,format);
+                       }
+
                     }
                     JReflectionUtils.setFieldValue(instance, fieldName, value);
                 }
@@ -291,20 +310,98 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
             try {
                 field.setAccessible(true);
                 Object value = field.get(bean);
+                JSONIgnore ignore=field.getAnnotation(JSONIgnore.class);
+                if(ignore != null) {
+                    continue;
+                }
+                String fieldName = field.getName();
+                JSONField jsonField=field.getAnnotation(JSONField.class);
+
+                String format =null;
+                if(jsonField != null) {
+                    if(!StringUtils.isEmpty(jsonField.name())){
+                        fieldName=jsonField.name();
+                    }
+                    if(!StringUtils.isEmpty(jsonField.format())){
+                        format=jsonField.format();
+                    }
+                }
                 if (value == null) {
-                    json.put(field.getName(), null);
-                } else if (value instanceof Number || value instanceof Boolean || value instanceof String) {
-                    json.put(field.getName(), value);
-                } else if (!value.getClass().isArray() && !(value instanceof Collection) && !(value instanceof Map)) {
-                    json.put(field.getName(), fromBean(value));
+                    json.put(fieldName, null);
+                } if (value instanceof Map) {
+                    JSONObject object=new JSONObject((Map)value);
+                    json.put(fieldName, object);
+                }
+                else if (value.getClass().isArray() || (value instanceof Collection) ) {
+                    List<?> list=convertToList(value);
+                    JSONArray array=new JSONArray(list);
+                    json.put(fieldName, array);
                 } else if (value instanceof Collection) {
                     List<Object> list = new ArrayList<>();
                     for (Object item : (Collection<?>) value) {
-                        list.add(item instanceof String || item instanceof Number || item instanceof Boolean ? item : fromBean(item));
+                        list.add( fromBean(item));
                     }
-                    json.put(field.getName(), list);
-                } else {
-                    json.put(field.getName(), value);
+                    json.put(fieldName, list);
+                } else if (value instanceof BigDecimal){
+                    if(format==null){
+                        json.put(fieldName, value);
+                    }else{
+                        json.put(fieldName,getBigDecimal(format,value));
+                    }
+                } else if (value instanceof Float){
+                    if(format==null){
+                        json.put(fieldName, value);
+                    }else{
+                        json.put(fieldName,getFloat(format,value));
+                    }
+                }else if (value instanceof Double){
+                    if(format==null){
+                        json.put(fieldName, value);
+                    }else{
+                        json.put(fieldName,getDouble(format,value));
+                    }
+                }else if (value instanceof Date){
+                    if(format==null){
+                        json.put(fieldName, value);
+                    }else{
+                        json.put(fieldName,getDate(format,value));
+                    }
+                }else if (value instanceof Integer){
+                    if(format==null){
+                        json.put(fieldName, value);
+                    }else{
+                        json.put(fieldName,getInteger(format,value));
+                    }
+                }else if (value instanceof Long){
+                    if(format==null){
+                        json.put(fieldName, value);
+                    }else{
+                        json.put(fieldName,getLong(format,value));
+                    }
+                }else if (value instanceof Boolean){
+                    if(format==null){
+                        json.put(fieldName, value);
+                    }else{
+                        json.put(fieldName,getBoolean(format,value));
+                    }
+                }
+                else if (value instanceof Date){
+                    if(format==null){
+                        json.put(fieldName, value);
+                    }else{
+                        json.put(fieldName,getDate(format,value));
+                    }
+                } else if (value instanceof String){
+                    if(format==null){
+                        json.put(fieldName, value);
+                    }else{
+                        json.put(fieldName,getString(format,value));
+                    }
+                }
+                else {//
+                    String fieldNameStr=field.getName();
+                    JSONObject obj= fromBean(value);
+                    json.put(fieldName,obj);
                 }
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("Failed to convert bean to JSON", e);
@@ -329,7 +426,7 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
         }
         processed.put(original, null);
         Map<String, Object> copy = new LinkedHashMap<>();
-        for (Map.Entry<String, Object> entry : original.entrySet()) {
+        for (Entry<String, Object> entry : original.entrySet()) {
             Object value = entry.getValue();
             if (value instanceof Map) {
                 copy.put(entry.getKey(), deepCopyMap((Map<String, Object>) value, processed));
@@ -360,23 +457,6 @@ public class JSONObject implements Map<String, Object>, JBeanMapper {
         return copy;
     }
 
-    /**
-     * 检查JSON对象是否包含指定键
-     *
-     * @param key 要检查的键名
-     * @return 如果包含该键则返回true，否则返回false
-     */
-    public boolean has(String key) {
-        return map.containsKey(key);
-    }
 
-    /**
-     * 检查JSON对象是否包含指定键且值不为null
-     *
-     * @param key 要检查的键名
-     * @return 如果包含该键且值不为null则返回true，否则返回false
-     */
-    public boolean hasNotNull(String key) {
-        return map.containsKey(key) && map.get(key) != null;
-    }
+
 }

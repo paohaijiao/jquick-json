@@ -15,9 +15,8 @@
  */
 package com.github.paohaijiao.factory;
 
-import com.github.paohaijiao.serializer.JDefaultJSONSerializer;
-import com.github.paohaijiao.serializer.JQuickJSONSerializer;
 import com.github.paohaijiao.serializer.JSONSerializer;
+import com.github.paohaijiao.serializer.impl.JQuickJSONSerializer;
 import com.paohaijiao.javelin.param.JContext;
 
 /**
@@ -31,17 +30,23 @@ import com.paohaijiao.javelin.param.JContext;
  */
 public class JSONSerializerFactory {
 
-    private static final JSONSerializer DEFAULT_SERIALIZER = new JDefaultJSONSerializer();
+    private static final JSONSerializer DEFAULT_SERIALIZER =  createJQuickSerializer();
 
     public static JSONSerializer getDefaultSerializer() {
         return DEFAULT_SERIALIZER;
     }
 
-    public static JSONSerializer createSerializer() {
-        return new JDefaultJSONSerializer();
-    }
+//    public static JSONSerializer createSerializer(JContext context) {
+//        return new JDefaultJSONSerializer(context);
+//    }
+//    public static JSONSerializer createSerializer() {
+//        return new JDefaultJSONSerializer();
+//    }
 
     public static JSONSerializer createJQuickSerializer(JContext context) {
         return new JQuickJSONSerializer(context);
+    }
+    public static JSONSerializer createJQuickSerializer() {
+        return new JQuickJSONSerializer();
     }
 }

@@ -1,4 +1,4 @@
-///*
+package com.github.paohaijiao.serializer.impl; ///*
 // * Licensed under the Apache License, Version 2.0 (the "License");
 // * you may not use this file except in compliance with the License.
 // * You may obtain a copy of the License at
@@ -13,15 +13,19 @@
 // *
 // * Copyright (c) [2025-2099] Martin (goudingcheng@gmail.com)
 // */
-//package com.github.paohaijiao.serializer;
+//package com.github.paohaijiao.serializer.impl;
 //
 //import com.github.paohaijiao.model.JSONArray;
 //import com.github.paohaijiao.model.JSONObject;
+//import com.github.paohaijiao.serializer.JSONSerializer;
 //import com.github.paohaijiao.support.JSONSupport;
 //import com.paohaijiao.javelin.param.JContext;
+//import com.paohaijiao.javelin.util.JStringUtils;
 //
 //import java.lang.reflect.Array;
+//import java.util.ArrayList;
 //import java.util.Collection;
+//import java.util.List;
 //
 ///**
 // * packageName com.paohaijiao.javelin.serializer
@@ -33,6 +37,7 @@
 // * @description
 // */
 //public class JDefaultJSONSerializer implements JSONSerializer {
+//
 //    private JContext context;
 //
 //    public JDefaultJSONSerializer() {
@@ -50,7 +55,7 @@
 //            return object.toString();
 //        }
 //        if (object instanceof String) {
-//            return quoteString((String) object);
+//            return JStringUtils.trim((String) object);
 //        }
 //        if (object instanceof Number || object instanceof Boolean) {
 //            return object.toString();
@@ -87,9 +92,6 @@
 //        return null;
 //    }
 //
-//    private String quoteString(String str) {
-//        return "\"" + JSONObject.escape(str) + "\"";
-//    }
 //
 //    private String serializeArray(Object array) {
 //        JSONArray jsonArray = new JSONArray();
@@ -110,7 +112,7 @@
 //
 //    @SuppressWarnings("unchecked")
 //    private <T> T deserializeArrayOrCollection(String json, Class<T> clazz) {
-//        JSONArray jsonArray = JSONArray.parseJSONArray(json);
+//        JSONArray jsonArray = parseArray(json);
 //        if (clazz.isArray()) {
 //            return (T) toArray(jsonArray, clazz.getComponentType());
 //        }
@@ -167,5 +169,70 @@
 //            return ((JSONObject) value).toBean(targetType);
 //        }
 //        return deserializePrimitive(value.toString(), targetType);
+//    }
+//
+//    public static JSONArray parseArray(String json) {
+//        if (json == null) {
+//            throw new IllegalArgumentException("JSON string cannot be null");
+//        }
+//        String trimmed = json.trim();
+//        if (!trimmed.startsWith("[") || !trimmed.endsWith("]")) {
+//            throw new IllegalArgumentException("Not a valid JSON array");
+//        }
+//        String content = trimmed.substring(1, trimmed.length() - 1).trim();
+//        if (content.isEmpty()) {
+//            return new JSONArray();
+//        }
+//        List<Object> list = new ArrayList<>();
+//        int index = 0;
+//        int length = content.length();
+//        while (index < length) {
+//            // 跳过空白字符
+//            while (index < length && Character.isWhitespace(content.charAt(index))) {
+//                index++;
+//            }
+//            if (index >= length) break;
+//            char c = content.charAt(index);
+//            Object value;
+//            if (c == '"') {
+//                value = JSONSupport.parseString(content, index);
+//                index = ((int[]) value)[1];
+//                value = ((Object[]) value)[0];
+//            }
+//            else if (c == '{') {
+//                value =JSONSupport. parseObject(content, index);
+//                index = ((int[]) value)[1];
+//                value = ((Object[]) value)[0];
+//            }
+//            else if (c == '[') {
+//                value = parseArray(content.substring(index));
+//                index += value.toString().length();
+//            }
+//            else if (c == 't' && content.startsWith("true", index)) { // true
+//                value = true;
+//                index += 4;
+//            }
+//            else if (c == 'f' && content.startsWith("false", index)) { // false
+//                value = false;
+//                index += 5;
+//            }
+//            else if (c == 'n' && content.startsWith("null", index)) { // null
+//                value = null;
+//                index += 4;
+//            }
+//            else { // 数字
+//                value = JSONSupport.parseNumber(content, index);
+//                index = ((int[]) value)[1];
+//                value = ((Object[]) value)[0];
+//            }
+//            list.add(value);
+//            while (index < length && Character.isWhitespace(content.charAt(index))) {
+//                index++;
+//            }
+//            if (index < length && content.charAt(index) == ',') {
+//                index++;
+//            }
+//        }
+//        return new JSONArray(list);
 //    }
 //}

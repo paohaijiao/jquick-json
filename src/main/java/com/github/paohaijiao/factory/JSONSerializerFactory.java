@@ -36,12 +36,6 @@ public class JSONSerializerFactory {
         return DEFAULT_SERIALIZER;
     }
 
-//    public static JSONSerializer createSerializer(JContext context) {
-//        return new JDefaultJSONSerializer(context);
-//    }
-//    public static JSONSerializer createSerializer() {
-//        return new JDefaultJSONSerializer();
-//    }
 
     public static JSONSerializer createJQuickSerializer(JContext context) {
         return new JQuickJSONSerializer(context);

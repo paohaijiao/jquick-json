@@ -18,11 +18,21 @@ package com.github.paohaijiao.model;
 import com.github.paohaijiao.mapper.JBeanMapper;
 import com.github.paohaijiao.mapper.JNativeFormatMapper;
 import com.github.paohaijiao.mapper.JNativeMapper;
+import com.github.paohaijiao.parser.JQuickJSONLexer;
+import com.github.paohaijiao.parser.JQuickJSONParser;
+import com.github.paohaijiao.visitor.JSONCommonVisitor;
+import com.paohaijiao.javelin.param.JContext;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
 public abstract class JSONBaseObject implements Map<String, Object>, JNativeFormatMapper, JNativeMapper,JBeanMapper {
     protected  Map<String, Object> map;
+
+    protected JContext context;
 
     public JSONObject getJSONObject(String key) {
         Object value = map.get(key);
@@ -177,5 +187,26 @@ public abstract class JSONBaseObject implements Map<String, Object>, JNativeForm
             return Arrays.asList((Object[]) value);
         }
         throw new IllegalArgumentException("Object is neither List nor Array");
+    }
+    public Object getValue(Object obj){
+        if(null==obj){
+            return obj;
+        }
+        String string=(String)obj;
+        if(StringUtils.isEmpty(string)){
+            return string;
+        }
+        if(string.startsWith("${") && string.endsWith("}")){
+            JQuickJSONLexer lexer = new JQuickJSONLexer(CharStreams.fromString(string));
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            JQuickJSONParser parser = new JQuickJSONParser(tokens);
+            ParseTree tree = parser.json();
+            JSONCommonVisitor visitor = new JSONCommonVisitor(this.context);
+            Object value= visitor.visit(tree);
+            return value;
+        }else{
+            return string;
+        }
+
     }
 }

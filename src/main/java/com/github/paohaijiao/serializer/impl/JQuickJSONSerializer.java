@@ -18,13 +18,19 @@ package com.github.paohaijiao.serializer.impl;
 import com.github.paohaijiao.executor.JSONExecutor;
 import com.github.paohaijiao.model.JSONArray;
 import com.github.paohaijiao.model.JSONObject;
+import com.github.paohaijiao.parser.JQuickJSONLexer;
+import com.github.paohaijiao.parser.JQuickJSONParser;
 import com.github.paohaijiao.serializer.JSONSerializer;
+import com.github.paohaijiao.visitor.JSONCommonVisitor;
 import com.paohaijiao.javelin.console.JConsole;
 import com.paohaijiao.javelin.enums.JLogLevel;
 import com.paohaijiao.javelin.exception.JAntlrExecutionException;
 import com.paohaijiao.javelin.param.JContext;
 import com.paohaijiao.javelin.util.JObjectConverter;
 import com.paohaijiao.javelin.util.JStringUtils;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
@@ -72,28 +78,7 @@ public class JQuickJSONSerializer implements JSONSerializer {
         if (object instanceof Collection) {
             return serializeCollection((Collection<?>) object);
         }
-        return new JSONObject().fromBean(object).toString();
-    }
-
-    @Override
-    public String serialize(JContext context, Object object) {
-        if (object == null) return "null";
-        if (object instanceof JSONObject || object instanceof JSONArray) {
-            return object.toString();
-        }
-        if (object instanceof String) {
-            return StringUtils.trim((String) object);
-        }
-        if (object instanceof Number || object instanceof Boolean) {
-            return object.toString();
-        }
-        if (object.getClass().isArray()) {
-            return serializeArray(object);
-        }
-        if (object instanceof Collection) {
-            return serializeCollection((Collection<?>) object);
-        }
-        return new JSONObject().fromBean(object).toString();
+        return new JSONObject(context).fromBean(object).toString();
     }
 
     @Override
@@ -126,7 +111,7 @@ public class JQuickJSONSerializer implements JSONSerializer {
         JSONArray jsonArray = new JSONArray();
         int length = Array.getLength(array);
         for (int i = 0; i < length; i++) {
-            jsonArray.add(new JSONObject().fromBean(Array.get(array, i)));
+            jsonArray.add(new JSONObject(this.context).fromBean(Array.get(array, i)));
         }
         return jsonArray.toString();
     }

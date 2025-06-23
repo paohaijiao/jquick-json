@@ -1,11 +1,9 @@
 package com.github.paohaijiao;
 
 import com.github.paohaijiao.factory.JSONSerializerFactory;
-import com.github.paohaijiao.model.JMember;
-import com.github.paohaijiao.model.JProduct;
-import com.github.paohaijiao.model.JProduct1;
-import com.github.paohaijiao.model.JUser;
+import com.github.paohaijiao.model.*;
 import com.github.paohaijiao.serializer.JSONSerializer;
+import com.paohaijiao.javelin.param.JContext;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -92,6 +90,15 @@ public class JQuickJSonTest {
         String json = serializer.serialize(jProduct);
         System.out.println(json);
     }
-
+    @Test
+    public void test11() throws IOException {
+        JUserModel user = new JUserModel("${key}", "${value}");
+        JContext context=new JContext();
+        context.put("key","key1");
+        context.put("value","key2");
+        JSONSerializer serializer = JSONSerializerFactory.createJQuickSerializer(context);
+        String json = serializer.serialize(user);
+        System.out.println(json);
+    }
 
 }

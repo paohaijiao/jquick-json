@@ -21,6 +21,7 @@ import com.github.paohaijiao.mapper.JBeanMapper;
 import com.github.paohaijiao.mapper.JNativeFormatMapper;
 import com.github.paohaijiao.mapper.JNativeMapper;
 import com.paohaijiao.javelin.exception.JAssert;
+import com.paohaijiao.javelin.param.JContext;
 import com.paohaijiao.javelin.util.JReflectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,16 +33,32 @@ import java.util.*;
 
 public class JSONObject extends JSONBaseObject implements Map<String, Object>, JNativeFormatMapper, JNativeMapper,JBeanMapper {
 
+
     public JSONObject() {
         this.map = new LinkedHashMap<>();
+        this.context = new JContext();
+    }
+    public JSONObject(JContext context) {
+        this.map = new LinkedHashMap<>();
+        this.context = context;
     }
 
     public JSONObject(int initialCapacity) {
         this.map = new LinkedHashMap<>(initialCapacity);
+        this.context = new JContext();
+    }
+    public JSONObject(int initialCapacity,JContext context) {
+        this.map = new LinkedHashMap<>(initialCapacity);
+        this.context = context;
     }
 
     public JSONObject(Map<String, Object> map) {
         this.map = new LinkedHashMap<>(map);
+        this.context = new JContext();
+    }
+    public JSONObject(Map<String, Object> map,JContext context) {
+        this.map = new LinkedHashMap<>(map);
+        this.context =context;
     }
     @Override
     public String getString(String key) {
@@ -316,7 +333,6 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
                 }
                 String fieldName = field.getName();
                 JSONField jsonField=field.getAnnotation(JSONField.class);
-
                 String format =null;
                 if(jsonField != null) {
                     if(!StringUtils.isEmpty(jsonField.name())){
@@ -393,7 +409,7 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
                     }
                 } else if (value instanceof String){
                     if(format==null){
-                        json.put(fieldName, value);
+                        json.put(fieldName, getValue(value));
                     }else{
                         json.put(fieldName,getString(format,value));
                     }

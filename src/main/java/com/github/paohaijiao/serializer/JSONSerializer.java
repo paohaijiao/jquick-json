@@ -5,7 +5,6 @@ import com.paohaijiao.javelin.param.JContext;
 public interface JSONSerializer {
 
     String serialize(Object object);
-    String serialize(JContext context,Object object);
 
     <T> T deserialize(String json, Class<T> clazz);
     <T> T deserialize(JContext context,String json, Class<T> clazz);

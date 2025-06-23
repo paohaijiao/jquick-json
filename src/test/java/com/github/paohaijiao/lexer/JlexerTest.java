@@ -66,7 +66,6 @@ public class JlexerTest {
     @Test
     public void string() throws IOException {
         String input = "'1'";
-        System.out.println(input);
         JQuickJSONLexer lexer = new JQuickJSONLexer(CharStreams.fromString(input));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         JQuickJSONParser parser = new JQuickJSONParser(tokens);

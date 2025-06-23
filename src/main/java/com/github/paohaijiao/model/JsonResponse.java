@@ -15,7 +15,7 @@
  */
 package com.github.paohaijiao.model;
 
-import com.paohaijiao.javelin.util.JBeanCopyUtils;
+import com.github.paohaijiao.util.JBeanCopyUtils;
 import lombok.Data;
 
 import java.util.List;

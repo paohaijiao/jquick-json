@@ -3,7 +3,7 @@ package com.github.paohaijiao;
 import com.github.paohaijiao.factory.JSONSerializerFactory;
 import com.github.paohaijiao.model.*;
 import com.github.paohaijiao.serializer.JSONSerializer;
-import com.paohaijiao.javelin.param.JContext;
+import com.github.paohaijiao.param.JContext;
 import org.junit.Test;
 
 import java.io.IOException;

@@ -20,10 +20,10 @@ import com.github.paohaijiao.model.JSONObject;
 import com.github.paohaijiao.model.JSonKeyValue;
 import com.github.paohaijiao.model.JsonResponse;
 import com.github.paohaijiao.parser.JQuickJSONParser;
-import com.paohaijiao.javelin.exception.JAssert;
-import com.paohaijiao.javelin.param.JContext;
-import com.paohaijiao.javelin.util.JObjectConverter;
-import com.paohaijiao.javelin.util.JStringUtils;
+import com.github.paohaijiao.exception.JAssert;
+import com.github.paohaijiao.param.JContext;
+import com.github.paohaijiao.util.JObjectConverter;
+import com.github.paohaijiao.util.JStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;

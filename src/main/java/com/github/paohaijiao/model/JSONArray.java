@@ -16,10 +16,10 @@
 package com.github.paohaijiao.model;
 
 import com.github.paohaijiao.executor.JSONExecutor;
-import com.paohaijiao.javelin.console.JConsole;
-import com.paohaijiao.javelin.enums.JLogLevel;
-import com.paohaijiao.javelin.exception.JAntlrExecutionException;
-import com.paohaijiao.javelin.util.JObjectConverter;
+import com.github.paohaijiao.console.JConsole;
+import com.github.paohaijiao.enums.JLogLevel;
+import com.github.paohaijiao.exception.JAntlrExecutionException;
+import com.github.paohaijiao.util.JObjectConverter;
 
 import java.util.*;
 

@@ -20,9 +20,9 @@ import com.github.paohaijiao.anno.JSONIgnore;
 import com.github.paohaijiao.mapper.JBeanMapper;
 import com.github.paohaijiao.mapper.JNativeFormatMapper;
 import com.github.paohaijiao.mapper.JNativeMapper;
-import com.paohaijiao.javelin.exception.JAssert;
-import com.paohaijiao.javelin.param.JContext;
-import com.paohaijiao.javelin.util.JReflectionUtils;
+import com.github.paohaijiao.exception.JAssert;
+import com.github.paohaijiao.param.JContext;
+import com.github.paohaijiao.util.JReflectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;

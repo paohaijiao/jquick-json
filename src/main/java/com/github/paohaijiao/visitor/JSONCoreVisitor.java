@@ -16,7 +16,7 @@
 package com.github.paohaijiao.visitor;
 
 import com.github.paohaijiao.parser.JQuickJSONBaseVisitor;
-import com.paohaijiao.javelin.param.JContext;
+import com.github.paohaijiao.param.JContext;
 import org.apache.commons.lang3.StringUtils;
 
 public class JSONCoreVisitor extends JQuickJSONBaseVisitor {

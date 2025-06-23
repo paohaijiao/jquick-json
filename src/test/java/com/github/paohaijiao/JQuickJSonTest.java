@@ -100,5 +100,16 @@ public class JQuickJSonTest {
         String json = serializer.serialize(user);
         System.out.println(json);
     }
+    @Test
+    public void test12() throws IOException {
+        String str="{\"product\":{\"id\":1001,\"serialNumber\":20230501123456789,\"isAvailable\":true,\"productionDate\":\"2023-05-15T08:30:00Z\",\"price\":199.99,\"discountRate\":0.15,\"specifications\":{\"weight\":2.5,\"dimensions\":{\"length\":120,\"width\":80,\"height\":10}},\"tags\":[\"electronics\",\"new-arrival\",\"sale\"],\"inventory\":{\"warehouse1\":150,\"warehouse2\":75,\"total\":225}}}\n";
+        System.out.println(str);
+        JContext context=new JContext();
+        context.put("key","key1");
+        context.put("value","key2");
+        JSONSerializer serializer = JSONSerializerFactory.createJQuickSerializer(context);
+        JProduct json = serializer.deserialize(str,JProduct.class);
+        System.out.println(json);
+    }
 
 }

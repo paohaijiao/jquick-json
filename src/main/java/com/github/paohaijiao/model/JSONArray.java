@@ -24,6 +24,7 @@ import com.paohaijiao.javelin.util.JObjectConverter;
 import java.util.*;
 
 public class JSONArray implements List<Object> {
+
     private final List<Object> list;
 
     public JSONArray() {
@@ -242,6 +243,9 @@ public class JSONArray implements List<Object> {
                     System.err.println(" - " + err.getMessage()));
         }
         return new JSONArray();
+    }
+    public List<?>toCollection(){
+        return list;
     }
 
 }

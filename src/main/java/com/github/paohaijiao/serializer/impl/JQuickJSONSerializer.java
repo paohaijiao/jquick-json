@@ -92,7 +92,25 @@ public class JQuickJSONSerializer implements JSONSerializer {
             Object result = executor.execute(json);
             JConsole console = new JConsole();
             console.log(JLogLevel.INFO,"parse result:"+result);
-            return clazz.cast(result);
+            if(null==result){
+                return null;
+            }
+            if(result instanceof JSONObject){
+                JSONObject jsonObject=(JSONObject)result;
+                return jsonObject.toBean(clazz);
+            }else if(result instanceof JSONArray){
+                JSONArray array=(JSONArray)result;
+                if (clazz == JSONArray.class) {
+                    return clazz.cast(array);
+                } else if (clazz.isArray()) {
+                    return (T) array.toArray();
+                } else if (Collection.class.isAssignableFrom(clazz)) {
+                    return (T) array.toCollection();
+                }
+            }else{
+                return clazz.cast(result);
+            }
+
         } catch (JAntlrExecutionException e) {
             System.err.println("解析失败: " + e.getMessage());
             e.getErrors().forEach(err ->
@@ -101,10 +119,6 @@ public class JQuickJSONSerializer implements JSONSerializer {
         return null;
     }
 
-    @Override
-    public <T> T deserialize(JContext context, String json, Class<T> clazz) {
-        return null;
-    }
 
 
     private String serializeArray(Object array) {
@@ -124,38 +138,9 @@ public class JQuickJSONSerializer implements JSONSerializer {
         return jsonArray.toString();
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> T deserializeArrayOrCollection(String json, Class<T> clazz) {
-        JSONArray jsonArray = JSONArray.parseJSONArray(json);
-        if (clazz.isArray()) {
-            return (T) toArray(jsonArray, clazz.getComponentType());
-        }
-        if (Collection.class.isAssignableFrom(clazz)) {
-            return (T) toCollection(jsonArray, clazz);
-        }
-        throw new IllegalArgumentException("Cannot deserialize array to " + clazz.getName());
-    }
 
-    private Object[] toArray(JSONArray jsonArray, Class<?> componentType) {
-        Object array = Array.newInstance(componentType, jsonArray.size());
-        for (int i = 0; i < jsonArray.size(); i++) {
-            Array.set(array, i, convertValue(jsonArray.get(i), componentType));
-        }
-        return (Object[]) array;
-    }
 
-    @SuppressWarnings("unchecked")
-    private Collection<?> toCollection(JSONArray jsonArray, Class<?> collectionType) {
-        try {
-            Collection<Object> collection = (Collection<Object>) collectionType.newInstance();
-            jsonArray.forEach(item ->
-                    collection.add(convertValue(item, Object.class))
-            );
-            return collection;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create collection", e);
-        }
-    }
+
 
     private <T> T deserializePrimitive(String json, Class<T> clazz) {
         if (clazz == String.class) {
@@ -184,15 +169,6 @@ public class JQuickJSONSerializer implements JSONSerializer {
             throw new RuntimeException(e);
         }
         return data;
-    }
-    
-    private Object convertValue(Object value, Class<?> targetType) {
-        if (value == null) return null;
-        if (targetType.isInstance(value)) return value;
-        if (value instanceof JSONObject) {
-            return ((JSONObject) value).toBean(targetType);
-        }
-        return deserializePrimitive(value.toString(), targetType);
     }
 
 

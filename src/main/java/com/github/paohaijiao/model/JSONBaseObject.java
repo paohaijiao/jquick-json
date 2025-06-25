@@ -129,7 +129,7 @@ public abstract class JSONBaseObject implements Map<String, Object>, JNativeForm
      * @param key 要检查的键名
      * @return 如果包含该键则返回true，否则返回false
      */
-    protected boolean has(String key) {
+    public boolean has(String key) {
         return map.containsKey(key);
     }
 
@@ -139,10 +139,10 @@ public abstract class JSONBaseObject implements Map<String, Object>, JNativeForm
      * @param key 要检查的键名
      * @return 如果包含该键且值不为null则返回true，否则返回false
      */
-    protected boolean hasNotNull(String key) {
+    public boolean hasNotNull(String key) {
         return map.containsKey(key) && map.get(key) != null;
     }
-    protected Object getNativeValue( String fieldName,   Class<?> fieldType ,Object value) {
+    public Object getNativeValue( String fieldName,   Class<?> fieldType ,Object value) {
         if (fieldType == Integer.class || fieldType == int.class) {
             value = this.getInteger(fieldName);
         } else if (fieldType == Long.class || fieldType == long.class) {
@@ -159,7 +159,7 @@ public abstract class JSONBaseObject implements Map<String, Object>, JNativeForm
         }
         return value;
     }
-    protected Object getNativeForMatValue( String fieldName,   Class<?> fieldType ,Object value,String format) {
+    public Object getNativeForMatValue( String fieldName,   Class<?> fieldType ,Object value,String format) {
         if (fieldType == Integer.class || fieldType == int.class) {
             value = this.getInteger(format,fieldName);
         } else if (fieldType == Long.class || fieldType == long.class) {

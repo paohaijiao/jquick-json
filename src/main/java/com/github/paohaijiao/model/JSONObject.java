@@ -21,7 +21,10 @@ import com.github.paohaijiao.mapper.JBeanMapper;
 import com.github.paohaijiao.mapper.JNativeFormatMapper;
 import com.github.paohaijiao.mapper.JNativeMapper;
 import com.github.paohaijiao.exception.JAssert;
+import com.github.paohaijiao.merge.JMergeStrategy;
+import com.github.paohaijiao.merge.impl.JDefaultJsonMerger;
 import com.github.paohaijiao.param.JContext;
+import com.github.paohaijiao.support.JSonMerge;
 import com.github.paohaijiao.util.JReflectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -472,7 +475,17 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
         }
         return copy;
     }
+    public JSONObject mergeWith(JSONObject other, JMergeStrategy strategy) {
+        return new JDefaultJsonMerger().strategy(strategy).merge(this, other);
+    }
 
+    public JSONObject deepMergeWith(JSONObject other) {
+        return JSonMerge.deepMerge(this, other);
+    }
+
+    public JSONObject shallowMergeWith(JSONObject other) {
+        return JSonMerge.shallowMerge(this, other);
+    }
 
 
 }

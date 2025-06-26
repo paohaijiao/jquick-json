@@ -19,6 +19,9 @@ import com.github.paohaijiao.executor.JSONExecutor;
 import com.github.paohaijiao.console.JConsole;
 import com.github.paohaijiao.enums.JLogLevel;
 import com.github.paohaijiao.exception.JAntlrExecutionException;
+import com.github.paohaijiao.merge.JMergeStrategy;
+import com.github.paohaijiao.merge.impl.JDefaultJsonMerger;
+import com.github.paohaijiao.support.JSonMerge;
 import com.github.paohaijiao.util.JObjectConverter;
 
 import java.util.*;
@@ -246,6 +249,18 @@ public class JSONArray implements List<Object> {
     }
     public List<?>toCollection(){
         return list;
+    }
+
+    public JSONArray mergeWith(JSONArray other, JMergeStrategy strategy) {
+        return new JDefaultJsonMerger().strategy(strategy).merge(this, other);
+    }
+
+    public JSONArray deepMergeWith(JSONArray other) {
+        return JSonMerge.deepMerge(this, other);
+    }
+
+    public JSONArray shallowMergeWith(JSONArray other) {
+        return JSonMerge.shallowMerge(this, other);
     }
 
 }

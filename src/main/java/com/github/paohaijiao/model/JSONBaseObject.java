@@ -18,8 +18,11 @@ package com.github.paohaijiao.model;
 import com.github.paohaijiao.mapper.JBeanMapper;
 import com.github.paohaijiao.mapper.JNativeFormatMapper;
 import com.github.paohaijiao.mapper.JNativeMapper;
+import com.github.paohaijiao.merge.JMergeStrategy;
+import com.github.paohaijiao.merge.impl.JDefaultJsonMerger;
 import com.github.paohaijiao.parser.JQuickJSONLexer;
 import com.github.paohaijiao.parser.JQuickJSONParser;
+import com.github.paohaijiao.support.JSonMerge;
 import com.github.paohaijiao.visitor.JSONCommonVisitor;
 import com.github.paohaijiao.param.JContext;
 import org.antlr.v4.runtime.CharStreams;
@@ -209,4 +212,5 @@ public abstract class JSONBaseObject implements Map<String, Object>, JNativeForm
         }
 
     }
+
 }

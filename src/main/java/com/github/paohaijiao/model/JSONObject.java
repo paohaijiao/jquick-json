@@ -310,7 +310,7 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
 
             return instance;
         } catch (Exception e) {
-            throw new RuntimeException("转换JSON对象为Bean失败", e);
+            throw new RuntimeException("failed to convert json object to bean", e);
         }
     }
 

@@ -24,17 +24,15 @@ public class JSONCoreVisitor extends JQuickJSONBaseVisitor {
     protected JContext context;
 
 
-
     protected String trimDateSplit(String date) {
         if (StringUtils.isBlank(date)) {
             return date;
         }
-        String newString=date.replace("-", "");
-        String newString1=newString.replace(" ", "");
-        String newString2=newString1.replace("/", "");
+        String newString = date.replace("-", "");
+        String newString1 = newString.replace(" ", "");
+        String newString2 = newString1.replace("/", "");
         return newString2.trim();
     }
-
 
 
 }

@@ -20,13 +20,13 @@ import java.util.Date;
 
 public interface JNativeMapper {
 
-    public String getString(String key) ;
+    public String getString(String key);
 
-    public Integer getInteger(String key) ;
+    public Integer getInteger(String key);
 
-    public Long getLong(String key) ;
+    public Long getLong(String key);
 
-    public Double getDouble(String key) ;
+    public Double getDouble(String key);
 
     public Boolean getBoolean(String key);
 

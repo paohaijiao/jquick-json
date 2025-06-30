@@ -37,37 +37,39 @@ public class JSonMerge {
         JSONObject obj1 = new JSONObject();
         obj1.put("name", "Alice");
         obj1.put("age", 25);
-        JSONObject object1= new JSONObject();
+        JSONObject object1 = new JSONObject();
         object1.put("city", "New York");
         obj1.put("address", object1);
 
         JSONObject obj2 = new JSONObject();
         obj2.put("age", 26);
-        JSONObject object2=new JSONObject();
+        JSONObject object2 = new JSONObject();
         object2.put("zip", "10001");
-        obj2.put("address",object2 );
-        JSONArray array=new JSONArray();
+        obj2.put("address", object2);
+        JSONArray array = new JSONArray();
         array.add("Reading");
         obj2.put("hobbies", array);
         JSONObject deepMerged = obj1.deepMergeWith(obj2);
         System.out.println(deepMerged);
     }
+
     @Test
     public void test1() throws IOException {
         JSONObject obj1 = new JSONObject();
         obj1.put("name", "Alice");
         obj1.put("age", 25);
-        JSONObject object=new JSONObject();
+        JSONObject object = new JSONObject();
         object.put("city", "New York");
         obj1.put("address", object);
 
         JSONObject obj2 = new JSONObject();
         obj2.put("age", 26);
-        JSONObject jsonObject=new JSONObject();
+        JSONObject jsonObject = new JSONObject();
         jsonObject.put("zip", "10001");
         obj2.put("address", jsonObject);
-        JSONArray array=new JSONArray();
-        array.add("Reading");;
+        JSONArray array = new JSONArray();
+        array.add("Reading");
+        ;
         obj2.put("hobbies", array);
         JSONObject shallowMerged = obj1.shallowMergeWith(obj2);
         System.out.println(shallowMerged);

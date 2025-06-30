@@ -33,7 +33,6 @@ import java.util.Map;
 public class JSONSupport {
 
 
-
     public static String toJsonString(Object obj) {
         if (obj == null) {
             return "null";
@@ -134,8 +133,6 @@ public class JSONSupport {
 
         return sb.toString();
     }
-
-
 
 
     private static String unescapeJsonString(String str) {

@@ -83,15 +83,15 @@ public class JQuickJSONSerializer implements JSONSerializer {
         try {
             Object result = executor.execute(json);
             JConsole console = new JConsole();
-            console.log(JLogLevel.INFO,"parse result:"+result);
-            if(null==result){
+            console.log(JLogLevel.INFO, "parse result:" + result);
+            if (null == result) {
                 return null;
             }
-            if(result instanceof JSONObject){
-                JSONObject jsonObject=(JSONObject)result;
+            if (result instanceof JSONObject) {
+                JSONObject jsonObject = (JSONObject) result;
                 return jsonObject.toBean(clazz);
-            }else if(result instanceof JSONArray){
-                JSONArray array=(JSONArray)result;
+            } else if (result instanceof JSONArray) {
+                JSONArray array = (JSONArray) result;
                 if (clazz == JSONArray.class) {
                     return clazz.cast(array);
                 } else if (clazz.isArray()) {
@@ -99,7 +99,7 @@ public class JQuickJSONSerializer implements JSONSerializer {
                 } else if (Collection.class.isAssignableFrom(clazz)) {
                     return (T) array.toCollection();
                 }
-            }else{
+            } else {
                 return clazz.cast(result);
             }
 
@@ -110,7 +110,6 @@ public class JQuickJSONSerializer implements JSONSerializer {
         }
         return null;
     }
-
 
 
     private String serializeArray(Object array) {
@@ -131,9 +130,6 @@ public class JQuickJSONSerializer implements JSONSerializer {
     }
 
 
-
-
-
     private <T> T deserializePrimitive(String json, Class<T> clazz) {
         if (clazz == String.class) {
             return clazz.cast(JStringUtils.trim(json));
@@ -149,7 +145,8 @@ public class JQuickJSONSerializer implements JSONSerializer {
         }
         throw new IllegalArgumentException("Unsupported type: " + clazz.getName());
     }
-    private Date getDate(String date){
+
+    private Date getDate(String date) {
         String[] possibleDateFormats = {
                 "yyyy-MM-dd", "dd/MM/yyyy", "MM-dd-yyyy",
                 "yyyy MM dd", "yyyy.MM.dd", "MMM dd, yyyy"

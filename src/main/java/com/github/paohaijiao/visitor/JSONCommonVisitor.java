@@ -54,9 +54,9 @@ public class JSONCommonVisitor extends JSONCoreVisitor {
             if (result instanceof JSONObject) {// object
                 return (JSONObject) result;
             } else if (result instanceof List) {//list
-              List<?> list = JObjectConverter.assign( result, List.class);
-              return new JSONArray(list);
-            }else{//native
+                List<?> list = JObjectConverter.assign(result, List.class);
+                return new JSONArray(list);
+            } else {//native
                 return result;
             }
         }
@@ -112,6 +112,7 @@ public class JSONCommonVisitor extends JSONCoreVisitor {
         JAssert.throwNewException("invalid variable");
         return null;
     }
+
     @Override
     public Float visitFloat(JQuickJSONParser.FloatContext ctx) {
         if (ctx.NUMBER() != null) {
@@ -121,6 +122,7 @@ public class JSONCommonVisitor extends JSONCoreVisitor {
         JAssert.throwNewException("invalid variable");
         return null;
     }
+
     @Override
     public Double visitDouble(JQuickJSONParser.DoubleContext ctx) {
         if (ctx.NUMBER() != null) {
@@ -133,18 +135,18 @@ public class JSONCommonVisitor extends JSONCoreVisitor {
 
     @Override
     public Date visitDate(JQuickJSONParser.DateContext ctx) {
-        if(ctx.DATE() != null) {
-            String date=trimDateSplit(ctx.DATE().getText());
-            SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMdd");
+        if (ctx.DATE() != null) {
+            String date = trimDateSplit(ctx.DATE().getText());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             try {
                 return sdf.parse(date);
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
-        }else if(ctx.DATETIMETYPE()!=null){
+        } else if (ctx.DATETIMETYPE() != null) {
             String datetime = trimDateSplit(ctx.DATETIMETYPE().getText());
-            String newDate=datetime.replace("T","");
-            SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHH:mm:ss");
+            String newDate = datetime.replace("T", "");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
             try {
                 return sdf.parse(newDate);
             } catch (ParseException e) {

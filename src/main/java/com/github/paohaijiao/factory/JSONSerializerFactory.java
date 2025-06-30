@@ -30,7 +30,7 @@ import com.github.paohaijiao.serializer.impl.JQuickJSONSerializer;
  */
 public class JSONSerializerFactory {
 
-    private static final JSONSerializer DEFAULT_SERIALIZER =  createJQuickSerializer();
+    private static final JSONSerializer DEFAULT_SERIALIZER = createJQuickSerializer();
 
     public static JSONSerializer getDefaultSerializer() {
         return DEFAULT_SERIALIZER;
@@ -40,6 +40,7 @@ public class JSONSerializerFactory {
     public static JSONSerializer createJQuickSerializer(JContext context) {
         return new JQuickJSONSerializer(context);
     }
+
     public static JSONSerializer createJQuickSerializer() {
         return new JQuickJSONSerializer();
     }

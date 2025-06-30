@@ -29,8 +29,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-public abstract class JSONBaseObject implements Map<String, Object>, JNativeFormatMapper, JNativeMapper,JBeanMapper {
-    protected  Map<String, Object> map;
+public abstract class JSONBaseObject implements Map<String, Object>, JNativeFormatMapper, JNativeMapper, JBeanMapper {
+    protected Map<String, Object> map;
 
     protected JContext context;
 
@@ -142,7 +142,8 @@ public abstract class JSONBaseObject implements Map<String, Object>, JNativeForm
     public boolean hasNotNull(String key) {
         return map.containsKey(key) && map.get(key) != null;
     }
-    public Object getNativeValue( String fieldName,   Class<?> fieldType ,Object value) {
+
+    public Object getNativeValue(String fieldName, Class<?> fieldType, Object value) {
         if (fieldType == Integer.class || fieldType == int.class) {
             value = this.getInteger(fieldName);
         } else if (fieldType == Long.class || fieldType == long.class) {
@@ -151,31 +152,31 @@ public abstract class JSONBaseObject implements Map<String, Object>, JNativeForm
             value = this.getDouble(fieldName);
         } else if (fieldType == Boolean.class || fieldType == boolean.class) {
             value = this.getBoolean(fieldName);
-        }else if (fieldType == Date.class ) {
+        } else if (fieldType == Date.class) {
             value = this.getDate(fieldName);
-        }
-        else if (fieldType == String.class) {
+        } else if (fieldType == String.class) {
             value = this.getString(fieldName);
         }
         return value;
     }
-    public Object getNativeForMatValue( String fieldName,   Class<?> fieldType ,Object value,String format) {
+
+    public Object getNativeForMatValue(String fieldName, Class<?> fieldType, Object value, String format) {
         if (fieldType == Integer.class || fieldType == int.class) {
-            value = this.getInteger(format,fieldName);
+            value = this.getInteger(format, fieldName);
         } else if (fieldType == Long.class || fieldType == long.class) {
-            value = this.getLong(format,fieldName);
+            value = this.getLong(format, fieldName);
         } else if (fieldType == Double.class || fieldType == double.class) {
-            value = this.getDouble(format,fieldName);
+            value = this.getDouble(format, fieldName);
         } else if (fieldType == Boolean.class || fieldType == boolean.class) {
-            value = this.getBoolean(format,fieldName);
-        }else if (fieldType == Date.class ) {
-            value = this.getDate(format,fieldName);
-        }
-        else if (fieldType == String.class) {
-            value = this.getString(format,fieldName);
+            value = this.getBoolean(format, fieldName);
+        } else if (fieldType == Date.class) {
+            value = this.getDate(format, fieldName);
+        } else if (fieldType == String.class) {
+            value = this.getString(format, fieldName);
         }
         return value;
     }
+
     public static List<?> convertToList(Object value) {
         if (value == null) {
             return Collections.emptyList();
@@ -188,23 +189,24 @@ public abstract class JSONBaseObject implements Map<String, Object>, JNativeForm
         }
         throw new IllegalArgumentException("Object is neither List nor Array");
     }
-    public Object getValue(Object obj){
-        if(null==obj){
+
+    public Object getValue(Object obj) {
+        if (null == obj) {
             return obj;
         }
-        String string=(String)obj;
-        if(StringUtils.isEmpty(string)){
+        String string = (String) obj;
+        if (StringUtils.isEmpty(string)) {
             return string;
         }
-        if(string.startsWith("${") && string.endsWith("}")){
+        if (string.startsWith("${") && string.endsWith("}")) {
             JQuickJSONLexer lexer = new JQuickJSONLexer(CharStreams.fromString(string));
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             JQuickJSONParser parser = new JQuickJSONParser(tokens);
             ParseTree tree = parser.json();
             JSONCommonVisitor visitor = new JSONCommonVisitor(this.context);
-            Object value= visitor.visit(tree);
+            Object value = visitor.visit(tree);
             return value;
-        }else{
+        } else {
             return string;
         }
 

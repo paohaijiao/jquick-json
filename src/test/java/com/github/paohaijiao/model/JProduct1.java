@@ -26,7 +26,7 @@ public class JProduct1 {
         @JsonProperty("isAvailable")
         private Boolean isAvailable;
         @JsonProperty("productionDate")
-        @JSONField(name="haha",format = "yyyy-MM-dd HH:mm:ss")
+        @JSONField(name = "haha", format = "yyyy-MM-dd HH:mm:ss")
         private Date productionDate;
         @JsonProperty("price")
         private Double price;

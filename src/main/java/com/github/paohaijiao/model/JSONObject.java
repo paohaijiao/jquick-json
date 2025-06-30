@@ -34,13 +34,14 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class JSONObject extends JSONBaseObject implements Map<String, Object>, JNativeFormatMapper, JNativeMapper,JBeanMapper {
+public class JSONObject extends JSONBaseObject implements Map<String, Object>, JNativeFormatMapper, JNativeMapper, JBeanMapper {
 
 
     public JSONObject() {
         this.map = new LinkedHashMap<>();
         this.context = new JContext();
     }
+
     public JSONObject(JContext context) {
         this.map = new LinkedHashMap<>();
         this.context = context;
@@ -50,7 +51,8 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
         this.map = new LinkedHashMap<>(initialCapacity);
         this.context = new JContext();
     }
-    public JSONObject(int initialCapacity,JContext context) {
+
+    public JSONObject(int initialCapacity, JContext context) {
         this.map = new LinkedHashMap<>(initialCapacity);
         this.context = context;
     }
@@ -59,73 +61,85 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
         this.map = new LinkedHashMap<>(map);
         this.context = new JContext();
     }
-    public JSONObject(Map<String, Object> map,JContext context) {
+
+    public JSONObject(Map<String, Object> map, JContext context) {
         this.map = new LinkedHashMap<>(map);
-        this.context =context;
+        this.context = context;
     }
+
     @Override
     public String getString(String key) {
         Object value = map.get(key);
         return value == null ? null : value.toString();
     }
+
     @Override
     public String getString(String format, Object value) {
         String formatString = String.format(format, value);
         return formatString;
     }
+
     @Override
     public Integer getInteger(String key) {
         Object value = map.get(key);
         return value == null ? null : Integer.valueOf(value.toString());
     }
+
     @Override
     public String getInteger(String format, Object value) {
-            DecimalFormat df = new DecimalFormat(format);
-            Integer number=Integer.valueOf(value.toString());
-            String formatted = df.format(number);
-            return formatted;
+        DecimalFormat df = new DecimalFormat(format);
+        Integer number = Integer.valueOf(value.toString());
+        String formatted = df.format(number);
+        return formatted;
     }
+
     @Override
     public Long getLong(String key) {
         Object value = map.get(key);
         return value == null ? null : Long.valueOf(value.toString());
     }
+
     @Override
     public String getLong(String format, Object value) {
-            DecimalFormat df = new DecimalFormat(format);
-            Integer number=Integer.valueOf(value.toString());
-            String formatted = df.format(number);
-            return formatted;
+        DecimalFormat df = new DecimalFormat(format);
+        Integer number = Integer.valueOf(value.toString());
+        String formatted = df.format(number);
+        return formatted;
     }
+
     @Override
     public Double getDouble(String key) {
         Object value = map.get(key);
         return value == null ? null : Double.valueOf(value.toString());
     }
-    @Override
-    public String getDouble(String format,Object value) {
 
-            DecimalFormat df = new DecimalFormat(format);
-            Integer number=Integer.valueOf(value.toString());
-            String formatted = df.format(number);
-            return formatted;
+    @Override
+    public String getDouble(String format, Object value) {
+
+        DecimalFormat df = new DecimalFormat(format);
+        Integer number = Integer.valueOf(value.toString());
+        String formatted = df.format(number);
+        return formatted;
     }
+
     @Override
     public Boolean getBoolean(String key) {
         Object value = map.get(key);
         return value == null ? null : Boolean.valueOf(value.toString());
     }
+
     @Override
     public String getBoolean(String format, Object value) {
-        return Boolean.valueOf(value.toString())+"";
+        return Boolean.valueOf(value.toString()) + "";
     }
+
     @Override
     public Date getDate(String key) {
         Object value = map.get(key);
-        if(null==value){
+        if (null == value) {
             return null;
-        }else if(value instanceof Date){
-            return (Date)value;
+        } else if (value instanceof Date) {
+            return (Date) value;
         }
         JAssert.throwNewException("invalid date type");
         return null;
@@ -133,48 +147,50 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
 
 
     @Override
-    public String getDate(String format,  Object value) {
-        Date d= (Date)value;
+    public String getDate(String format, Object value) {
+        Date d = (Date) value;
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(d);
     }
+
     @Override
     public BigDecimal getBigDecimal(String key) {
         Object value = map.get(key);
-        if(null==value){
+        if (null == value) {
             return null;
-        }else if(value instanceof BigDecimal){
-            return (BigDecimal)value;
+        } else if (value instanceof BigDecimal) {
+            return (BigDecimal) value;
         }
         JAssert.throwNewException("invalid BigDecimal type");
         return null;
     }
 
 
-
     @Override
     public String getBigDecimal(String format, Object value) {
-        if(value instanceof BigDecimal){
-            BigDecimal d= (BigDecimal)value;
-            DecimalFormat df= new DecimalFormat(format);
+        if (value instanceof BigDecimal) {
+            BigDecimal d = (BigDecimal) value;
+            DecimalFormat df = new DecimalFormat(format);
             return df.format(d);
         }
         return null;
     }
+
     @Override
     public Float getFloat(String key) {
         Object value = map.get(key);
-        if(null==value){
+        if (null == value) {
             return null;
-        }else if(value instanceof Float){
-            return (Float)value;
+        } else if (value instanceof Float) {
+            return (Float) value;
         }
         return null;
     }
+
     @Override
     public String getFloat(String format, Object value) {
-        if(value instanceof Float){
-            Float d= (Float)value;
+        if (value instanceof Float) {
+            Float d = (Float) value;
             String formatted = String.format(format, d);
             return formatted;
         }
@@ -269,24 +285,23 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
     }
 
 
-
     @Override
     public <T> T toBean(Class<T> t) {
         try {
             T instance = JReflectionUtils.newInstance(t);
             List<Field> fields = JReflectionUtils.getAllFields(t);
             for (Field field : fields) {
-                JSONIgnore ignore=field.getAnnotation(JSONIgnore.class);
-                if(ignore != null) {
+                JSONIgnore ignore = field.getAnnotation(JSONIgnore.class);
+                if (ignore != null) {
                     continue;
                 }
                 String fieldName = field.getName();
                 if (this.containsKey(fieldName)) {
-                    JSONField jsonField=field.getAnnotation(JSONField.class);
-                    String format =null;
-                    if(jsonField != null) {
-                        if(fieldName.equals(jsonField.name())){
-                            format=jsonField.format();
+                    JSONField jsonField = field.getAnnotation(JSONField.class);
+                    String format = null;
+                    if (jsonField != null) {
+                        if (fieldName.equals(jsonField.name())) {
+                            format = jsonField.format();
                         }
                     }
                     Object value = this.get(fieldName);
@@ -297,11 +312,11 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
                     } else if (fieldType.isEnum() && value instanceof String) {
                         value = JReflectionUtils.getEnumByName((Class<? extends Enum>) fieldType, (String) value);
                     } else if (value != null && !fieldType.isAssignableFrom(value.getClass())) {
-                       if(format==null){
-                           value = getNativeValue(fieldName,fieldType,value);
-                       }else{
-                           value = getNativeForMatValue(fieldName,fieldType,value,format);
-                       }
+                        if (format == null) {
+                            value = getNativeValue(fieldName, fieldType, value);
+                        } else {
+                            value = getNativeForMatValue(fieldName, fieldType, value, format);
+                        }
 
                     }
                     JReflectionUtils.setFieldValue(instance, fieldName, value);
@@ -330,97 +345,95 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
             try {
                 field.setAccessible(true);
                 Object value = field.get(bean);
-                JSONIgnore ignore=field.getAnnotation(JSONIgnore.class);
-                if(ignore != null) {
+                JSONIgnore ignore = field.getAnnotation(JSONIgnore.class);
+                if (ignore != null) {
                     continue;
                 }
                 String fieldName = field.getName();
-                JSONField jsonField=field.getAnnotation(JSONField.class);
-                String format =null;
-                if(jsonField != null) {
-                    if(!StringUtils.isEmpty(jsonField.name())){
-                        fieldName=jsonField.name();
+                JSONField jsonField = field.getAnnotation(JSONField.class);
+                String format = null;
+                if (jsonField != null) {
+                    if (!StringUtils.isEmpty(jsonField.name())) {
+                        fieldName = jsonField.name();
                     }
-                    if(!StringUtils.isEmpty(jsonField.format())){
-                        format=jsonField.format();
+                    if (!StringUtils.isEmpty(jsonField.format())) {
+                        format = jsonField.format();
                     }
                 }
                 if (value == null) {
                     json.put(fieldName, null);
-                } if (value instanceof Map) {
-                    JSONObject object=new JSONObject((Map)value);
-                    json.put(fieldName, object);
                 }
-                else if (value.getClass().isArray() || (value instanceof Collection) ) {
-                    List<?> list=convertToList(value);
-                    JSONArray array=new JSONArray(list);
+                if (value instanceof Map) {
+                    JSONObject object = new JSONObject((Map) value);
+                    json.put(fieldName, object);
+                } else if (value.getClass().isArray() || (value instanceof Collection)) {
+                    List<?> list = convertToList(value);
+                    JSONArray array = new JSONArray(list);
                     json.put(fieldName, array);
                 } else if (value instanceof Collection) {
                     List<Object> list = new ArrayList<>();
                     for (Object item : (Collection<?>) value) {
-                        list.add( fromBean(item));
+                        list.add(fromBean(item));
                     }
                     json.put(fieldName, list);
-                } else if (value instanceof BigDecimal){
-                    if(format==null){
+                } else if (value instanceof BigDecimal) {
+                    if (format == null) {
                         json.put(fieldName, value);
-                    }else{
-                        json.put(fieldName,getBigDecimal(format,value));
+                    } else {
+                        json.put(fieldName, getBigDecimal(format, value));
                     }
-                } else if (value instanceof Float){
-                    if(format==null){
+                } else if (value instanceof Float) {
+                    if (format == null) {
                         json.put(fieldName, value);
-                    }else{
-                        json.put(fieldName,getFloat(format,value));
+                    } else {
+                        json.put(fieldName, getFloat(format, value));
                     }
-                }else if (value instanceof Double){
-                    if(format==null){
+                } else if (value instanceof Double) {
+                    if (format == null) {
                         json.put(fieldName, value);
-                    }else{
-                        json.put(fieldName,getDouble(format,value));
+                    } else {
+                        json.put(fieldName, getDouble(format, value));
                     }
-                }else if (value instanceof Date){
-                    if(format==null){
+                } else if (value instanceof Date) {
+                    if (format == null) {
                         json.put(fieldName, value);
-                    }else{
-                        json.put(fieldName,getDate(format,value));
+                    } else {
+                        json.put(fieldName, getDate(format, value));
                     }
-                }else if (value instanceof Integer){
-                    if(format==null){
+                } else if (value instanceof Integer) {
+                    if (format == null) {
                         json.put(fieldName, value);
-                    }else{
-                        json.put(fieldName,getInteger(format,value));
+                    } else {
+                        json.put(fieldName, getInteger(format, value));
                     }
-                }else if (value instanceof Long){
-                    if(format==null){
+                } else if (value instanceof Long) {
+                    if (format == null) {
                         json.put(fieldName, value);
-                    }else{
-                        json.put(fieldName,getLong(format,value));
+                    } else {
+                        json.put(fieldName, getLong(format, value));
                     }
-                }else if (value instanceof Boolean){
-                    if(format==null){
+                } else if (value instanceof Boolean) {
+                    if (format == null) {
                         json.put(fieldName, value);
-                    }else{
-                        json.put(fieldName,getBoolean(format,value));
+                    } else {
+                        json.put(fieldName, getBoolean(format, value));
                     }
-                }
-                else if (value instanceof Date){
-                    if(format==null){
+                } else if (value instanceof Date) {
+                    if (format == null) {
                         json.put(fieldName, value);
-                    }else{
-                        json.put(fieldName,getDate(format,value));
+                    } else {
+                        json.put(fieldName, getDate(format, value));
                     }
-                } else if (value instanceof String){
-                    if(format==null){
+                } else if (value instanceof String) {
+                    if (format == null) {
                         json.put(fieldName, getValue(value));
-                    }else{
-                        json.put(fieldName,getString(format,value));
+                    } else {
+                        json.put(fieldName, getString(format, value));
                     }
-                }
-                else {//
-                    String fieldNameStr=field.getName();
-                    JSONObject obj= fromBean(value);
-                    json.put(fieldName,obj);
+                } else {//
+                    String fieldNameStr = field.getName();
+                    JSONObject obj = fromBean(value);
+                    json.put(fieldName, obj);
                 }
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("Failed to convert bean to JSON", e);
@@ -475,6 +488,7 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
         }
         return copy;
     }
+
     public JSONObject mergeWith(JSONObject other, JMergeStrategy strategy) {
         return new JDefaultJsonMerger().strategy(strategy).merge(this, other);
     }

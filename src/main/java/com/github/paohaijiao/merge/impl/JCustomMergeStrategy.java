@@ -30,8 +30,7 @@ import java.util.function.BiFunction;
  * @date 2025/6/26
  * @description
  */
-public class JCustomMergeStrategy implements JMergeStrategy
-{
+public class JCustomMergeStrategy implements JMergeStrategy {
     private final BiFunction<JSONObject, JSONObject, JSONObject> objectMerger;
     private final BiFunction<JSONArray, JSONArray, JSONArray> arrayMerger;
 

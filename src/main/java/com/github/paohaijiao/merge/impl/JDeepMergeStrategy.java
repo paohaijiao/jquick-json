@@ -30,8 +30,7 @@ import java.util.Map;
  * @date 2025/6/26
  * @description
  */
-public class JDeepMergeStrategy implements JMergeStrategy
-{
+public class JDeepMergeStrategy implements JMergeStrategy {
     @Override
     public JSONObject mergeObjects(JSONObject target, JSONObject source) {
         if (target == null) return source;

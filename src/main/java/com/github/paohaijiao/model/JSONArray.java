@@ -228,6 +228,7 @@ public class JSONArray implements List<Object> {
         sb.append("]");
         return sb.toString();
     }
+
     public static JSONArray parseJSONArray(String json) {
         JSONExecutor executor = new JSONExecutor();
         executor.addErrorListener(error -> {
@@ -237,8 +238,8 @@ public class JSONArray implements List<Object> {
         try {
             Object result = executor.execute(json);
             JConsole console = new JConsole();
-            console.log(JLogLevel.INFO,"parse result:"+result);
-            List<?> list= JObjectConverter.assign(result, List.class);
+            console.log(JLogLevel.INFO, "parse result:" + result);
+            List<?> list = JObjectConverter.assign(result, List.class);
             return new JSONArray(list);
         } catch (JAntlrExecutionException e) {
             System.err.println("解析失败: " + e.getMessage());
@@ -247,7 +248,8 @@ public class JSONArray implements List<Object> {
         }
         return new JSONArray();
     }
-    public List<?>toCollection(){
+
+    public List<?> toCollection() {
         return list;
     }
 

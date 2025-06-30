@@ -60,9 +60,10 @@ public class JlexerTest {
         JContext params = new JContext();
         params.put("key", "value");
         JSONCommonVisitor visitor = new JSONCommonVisitor(params);
-        Object key= visitor.visit(tree);
+        Object key = visitor.visit(tree);
         System.out.println(key);
     }
+
     @Test
     public void string() throws IOException {
         String input = "'1'";
@@ -73,9 +74,10 @@ public class JlexerTest {
         JContext params = new JContext();
         params.put("key", "value");
         JSONCommonVisitor visitor = new JSONCommonVisitor(params);
-        Object key= visitor.visit(tree);
+        Object key = visitor.visit(tree);
         System.out.println(key);
     }
+
     @Test
     public void number() throws IOException {
         String input = "1";
@@ -87,9 +89,10 @@ public class JlexerTest {
         JContext params = new JContext();
         params.put("key", "value");
         JSONCommonVisitor visitor = new JSONCommonVisitor(params);
-        Object key= visitor.visit(tree);
+        Object key = visitor.visit(tree);
         System.out.println(key);
     }
+
     @Test
     public void float1() throws IOException {
         String input = "1.1f";
@@ -101,9 +104,10 @@ public class JlexerTest {
         JContext params = new JContext();
         params.put("key", "value");
         JSONCommonVisitor visitor = new JSONCommonVisitor(params);
-        Object key= visitor.visit(tree);
+        Object key = visitor.visit(tree);
         System.out.println(key);
     }
+
     @Test
     public void double1() throws IOException {
         String input = "1.1d";
@@ -115,7 +119,7 @@ public class JlexerTest {
         JContext params = new JContext();
         params.put("key", "value");
         JSONCommonVisitor visitor = new JSONCommonVisitor(params);
-        Object key= visitor.visit(tree);
+        Object key = visitor.visit(tree);
         System.out.println(key);
     }
 
@@ -130,9 +134,10 @@ public class JlexerTest {
         JContext params = new JContext();
         params.put("key", "value");
         JSONCommonVisitor visitor = new JSONCommonVisitor(params);
-        Object key= visitor.visit(tree);
+        Object key = visitor.visit(tree);
         System.out.println(key);
     }
+
     @Test
     public void date1() throws IOException {
         String input = "2023-12-25T14:30:01";
@@ -144,9 +149,10 @@ public class JlexerTest {
         JContext params = new JContext();
         params.put("key", "value");
         JSONCommonVisitor visitor = new JSONCommonVisitor(params);
-        Object key= visitor.visit(tree);
+        Object key = visitor.visit(tree);
         System.out.println(key);
     }
+
     @Test
     public void date2() throws IOException {
         String input = "2023-12-25";
@@ -158,9 +164,10 @@ public class JlexerTest {
         JContext params = new JContext();
         params.put("key", "value");
         JSONCommonVisitor visitor = new JSONCommonVisitor(params);
-        Object key= visitor.visit(tree);
+        Object key = visitor.visit(tree);
         System.out.println(key);
     }
+
     @Test
     public void date3() throws IOException {
         String input = "2023/12/25";
@@ -172,9 +179,10 @@ public class JlexerTest {
         JContext params = new JContext();
         params.put("key", "value");
         JSONCommonVisitor visitor = new JSONCommonVisitor(params);
-        Object key= visitor.visit(tree);
+        Object key = visitor.visit(tree);
         System.out.println(key);
     }
+
     @Test
     public void bool() throws IOException {
         String input = "true";
@@ -186,9 +194,10 @@ public class JlexerTest {
         JContext params = new JContext();
         params.put("key", "value");
         JSONCommonVisitor visitor = new JSONCommonVisitor(params);
-        Object key= visitor.visit(tree);
+        Object key = visitor.visit(tree);
         System.out.println(key);
     }
+
     @Test
     public void nullVlue() throws IOException {
         String input = "null";
@@ -200,9 +209,10 @@ public class JlexerTest {
         JContext params = new JContext();
         params.put("key", "value");
         JSONCommonVisitor visitor = new JSONCommonVisitor(params);
-        Object key= visitor.visit(tree);
+        Object key = visitor.visit(tree);
         System.out.println(key);
     }
+
     @Test
     public void variable() throws IOException {
         String input = "${key}";
@@ -214,9 +224,10 @@ public class JlexerTest {
         JContext params = new JContext();
         params.put("key", "value");
         JSONCommonVisitor visitor = new JSONCommonVisitor(params);
-        Object key= visitor.visit(tree);
+        Object key = visitor.visit(tree);
         System.out.println(key);
     }
+
     @Test
     public void netestJson() throws IOException {
         String input = "{\n" +
@@ -307,7 +318,7 @@ public class JlexerTest {
         JContext params = new JContext();
         params.put("key", "value");
         JSONCommonVisitor visitor = new JSONCommonVisitor(params);
-        Object key= visitor.visit(tree);
+        Object key = visitor.visit(tree);
         System.out.println(key);
     }
 }

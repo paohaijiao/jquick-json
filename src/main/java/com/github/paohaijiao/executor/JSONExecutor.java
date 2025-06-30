@@ -15,12 +15,12 @@
  */
 package com.github.paohaijiao.executor;
 
-import com.github.paohaijiao.parser.JQuickJSONLexer;
-import com.github.paohaijiao.parser.JQuickJSONParser;
-import com.github.paohaijiao.visitor.JSONCommonVisitor;
 import com.github.paohaijiao.antlr.impl.JAbstractAntlrExecutor;
 import com.github.paohaijiao.exception.JAntlrExecutionException;
 import com.github.paohaijiao.param.JContext;
+import com.github.paohaijiao.parser.JQuickJSONLexer;
+import com.github.paohaijiao.parser.JQuickJSONParser;
+import com.github.paohaijiao.visitor.JSONCommonVisitor;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Parser;

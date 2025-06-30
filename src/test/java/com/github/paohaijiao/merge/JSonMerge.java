@@ -15,13 +15,8 @@
  */
 package com.github.paohaijiao.merge;
 
-import com.github.paohaijiao.factory.JSONSerializerFactory;
-import com.github.paohaijiao.merge.impl.JCustomMergeStrategy;
-import com.github.paohaijiao.merge.impl.JDefaultJsonMerger;
 import com.github.paohaijiao.model.JSONArray;
 import com.github.paohaijiao.model.JSONObject;
-import com.github.paohaijiao.model.JUser;
-import com.github.paohaijiao.serializer.JSONSerializer;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -42,12 +37,18 @@ public class JSonMerge {
         JSONObject obj1 = new JSONObject();
         obj1.put("name", "Alice");
         obj1.put("age", 25);
-        obj1.put("address", new JSONObject().put("city", "New York"));
+        JSONObject object1= new JSONObject();
+        object1.put("city", "New York");
+        obj1.put("address", object1);
 
         JSONObject obj2 = new JSONObject();
         obj2.put("age", 26);
-        obj2.put("address", new JSONObject().put("zip", "10001"));
-        obj2.put("hobbies", new JSONArray().add("Reading"));
+        JSONObject object2=new JSONObject();
+        object2.put("zip", "10001");
+        obj2.put("address",object2 );
+        JSONArray array=new JSONArray();
+        array.add("Reading");
+        obj2.put("hobbies", array);
         JSONObject deepMerged = obj1.deepMergeWith(obj2);
         System.out.println(deepMerged);
     }
@@ -56,12 +57,18 @@ public class JSonMerge {
         JSONObject obj1 = new JSONObject();
         obj1.put("name", "Alice");
         obj1.put("age", 25);
-        obj1.put("address", new JSONObject().put("city", "New York"));
+        JSONObject object=new JSONObject();
+        object.put("city", "New York");
+        obj1.put("address", object);
 
         JSONObject obj2 = new JSONObject();
         obj2.put("age", 26);
-        obj2.put("address", new JSONObject().put("zip", "10001"));
-        obj2.put("hobbies", new JSONArray().add("Reading"));
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("zip", "10001");
+        obj2.put("address", jsonObject);
+        JSONArray array=new JSONArray();
+        array.add("Reading");;
+        obj2.put("hobbies", array);
         JSONObject shallowMerged = obj1.shallowMergeWith(obj2);
         System.out.println(shallowMerged);
 

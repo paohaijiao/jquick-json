@@ -1,9 +1,9 @@
 package com.github.paohaijiao.lexer;
 
+import com.github.paohaijiao.param.JContext;
 import com.github.paohaijiao.parser.JQuickJSONLexer;
 import com.github.paohaijiao.parser.JQuickJSONParser;
 import com.github.paohaijiao.visitor.JSONCommonVisitor;
-import com.github.paohaijiao.param.JContext;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;

@@ -2,8 +2,9 @@ package com.github.paohaijiao;
 
 import com.github.paohaijiao.factory.JSONSerializerFactory;
 import com.github.paohaijiao.model.*;
-import com.github.paohaijiao.serializer.JSONSerializer;
 import com.github.paohaijiao.param.JContext;
+import com.github.paohaijiao.serializer.JSONSerializer;
+import com.github.paohaijiao.support.JSONSupport;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -56,7 +57,8 @@ public class JQuickJSonTest {
         jProduct.setProduct(productDTO);
         JSONSerializer serializer = JSONSerializerFactory.getDefaultSerializer();
         String json = serializer.serialize(jProduct);
-        System.out.println(json);
+       // System.out.println(JSONSupport.toJsonString(jProduct));
+        System.out.println(JSONSupport.prettyPrint(json,3));
     }
     @Test
     public void test3() throws IOException {

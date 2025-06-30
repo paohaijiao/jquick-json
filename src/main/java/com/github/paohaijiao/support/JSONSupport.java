@@ -18,11 +18,8 @@ package com.github.paohaijiao.support;
 import com.github.paohaijiao.model.JSONArray;
 import com.github.paohaijiao.model.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * packageName com.paohaijiao.javelin.support
@@ -35,7 +32,6 @@ import java.util.regex.Pattern;
  */
 public class JSONSupport {
 
-    private static final Pattern NUMBER_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?");
 
 
     public static String toJsonString(Object obj) {
@@ -140,81 +136,7 @@ public class JSONSupport {
     }
 
 
-    private static List<String> splitJsonEntries(String content) {
-        List<String> entries = new ArrayList<>();
-        int braceLevel = 0;
-        int bracketLevel = 0;
-        boolean inString = false;
-        int start = 0;
 
-        for (int i = 0; i < content.length(); i++) {
-            char c = content.charAt(i);
-            if (c == '"' && (i == 0 || content.charAt(i - 1) != '\\')) {
-                inString = !inString;
-            } else if (!inString) {
-                if (c == '{') braceLevel++;
-                else if (c == '}') braceLevel--;
-                else if (c == '[') bracketLevel++;
-                else if (c == ']') bracketLevel--;
-                else if (c == ',' && braceLevel == 0 && bracketLevel == 0) {
-                    entries.add(content.substring(start, i));
-                    start = i + 1;
-                }
-            }
-        }
-        entries.add(content.substring(start));
-        return entries;
-    }
-
-    private static List<String> splitJsonElements(String content) {
-        List<String> elements = new ArrayList<>();
-        int braceLevel = 0;
-        int bracketLevel = 0;
-        boolean inString = false;
-        int start = 0;
-
-        for (int i = 0; i < content.length(); i++) {
-            char c = content.charAt(i);
-            if (c == '"' && (i == 0 || content.charAt(i - 1) != '\\')) {
-                inString = !inString;
-            } else if (!inString) {
-                if (c == '{') braceLevel++;
-                else if (c == '}') braceLevel--;
-                else if (c == '[') bracketLevel++;
-                else if (c == ']') bracketLevel--;
-                else if (c == ',' && braceLevel == 0 && bracketLevel == 0) {
-                    elements.add(content.substring(start, i));
-                    start = i + 1;
-                }
-            }
-        }
-        elements.add(content.substring(start));
-        return elements;
-    }
-
-    private static String[] splitKeyValue(String entry) {
-        int colonPos = -1;
-        boolean inString = false;
-
-        for (int i = 0; i < entry.length(); i++) {
-            char c = entry.charAt(i);
-            if (c == '"' && (i == 0 || entry.charAt(i - 1) != '\\')) {
-                inString = !inString;
-            } else if (!inString && c == ':') {
-                colonPos = i;
-                break;
-            }
-        }
-
-        if (colonPos == -1) {
-            throw new IllegalArgumentException("Invalid JSON entry: " + entry);
-        }
-
-        return new String[]{
-                entry.substring(0, colonPos),
-                entry.substring(colonPos + 1)
-        };
-    }
 
     private static String unescapeJsonString(String str) {
         return str.replace("\\\"", "\"")
@@ -232,109 +154,5 @@ public class JSONSupport {
         }
     }
 
-    public static Object[] parseString(String content, int index) {
-        StringBuilder sb = new StringBuilder();
-        boolean escape = false;
-        index++;
-        while (index < content.length()) {
-            char c = content.charAt(index);
-            if (escape) {
-                switch (c) {
-                    case '"':
-                        sb.append('"');
-                        break;
-                    case '\\':
-                        sb.append('\\');
-                        break;
-                    case '/':
-                        sb.append('/');
-                        break;
-                    case 'b':
-                        sb.append('\b');
-                        break;
-                    case 'f':
-                        sb.append('\f');
-                        break;
-                    case 'n':
-                        sb.append('\n');
-                        break;
-                    case 'r':
-                        sb.append('\r');
-                        break;
-                    case 't':
-                        sb.append('\t');
-                        break;
-                    case 'u':
-                        if (index + 4 < content.length()) {
-                            String hex = content.substring(index + 1, index + 5);
-                            sb.append((char) Integer.parseInt(hex, 16));
-                            index += 4;
-                        }
-                        break;
-                    default:
-                        sb.append(c);
-                }
-                escape = false;
-            } else if (c == '"') {
-                index++;
-                return new Object[]{sb.toString(), index};
-            } else if (c == '\\') {
-                escape = true;
-            } else {
-                sb.append(c);
-            }
-            index++;
-        }
-        throw new IllegalArgumentException("Unterminated string");
-    }
 
-    public static Object[] parseObject(String content, int index) {
-        int start = index;
-        int braceCount = 1;
-        index++; // 跳过开始的{
-        while (index < content.length()) {
-            char c = content.charAt(index);
-            if (c == '"') {
-                // 跳过字符串内容
-                Object[] stringResult = parseString(content, index);
-                index = (int) stringResult[1];
-            } else if (c == '{') {
-                braceCount++;
-            } else if (c == '}') {
-                braceCount--;
-                if (braceCount == 0) {
-                    index++; // 跳过结束的}
-                    String objectStr = content.substring(start, index);
-                    return new Object[]{JSONObject.parseObject(objectStr), index};
-                }
-            }
-            index++;
-        }
-        throw new IllegalArgumentException("Unterminated object");
-    }
-
-    public static Object[] parseNumber(String content, int index) {
-        int start = index;
-        while (index < content.length()) {
-            char c = content.charAt(index);
-            if (!(Character.isDigit(c) || c == '-' || c == '+' || c == 'e' || c == 'E' || c == '.')) {
-                break;
-            }
-            index++;
-        }
-        String numStr = content.substring(start, index);
-        try {
-            if (numStr.contains(".")) {
-                return new Object[]{Double.parseDouble(numStr), index};
-            } else {
-                long longValue = Long.parseLong(numStr);
-                if (longValue >= Integer.MIN_VALUE && longValue <= Integer.MAX_VALUE) {
-                    return new Object[]{(int) longValue, index};
-                }
-                return new Object[]{longValue, index};
-            }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid number: " + numStr);
-        }
-    }
 }

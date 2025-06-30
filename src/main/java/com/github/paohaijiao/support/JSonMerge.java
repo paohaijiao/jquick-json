@@ -33,6 +33,7 @@ import com.github.paohaijiao.model.JSONObject;
  */
 public class JSonMerge {
     private static final JsonMerger DEEP_MERGER = new JDefaultJsonMerger().strategy(new JDeepMergeStrategy());
+
     private static final JsonMerger SHALLOW_MERGER = new JDefaultJsonMerger().strategy(new JShallowMergeStrategy());
 
 

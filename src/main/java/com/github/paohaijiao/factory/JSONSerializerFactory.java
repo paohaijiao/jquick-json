@@ -15,9 +15,9 @@
  */
 package com.github.paohaijiao.factory;
 
+import com.github.paohaijiao.param.JContext;
 import com.github.paohaijiao.serializer.JSONSerializer;
 import com.github.paohaijiao.serializer.impl.JQuickJSONSerializer;
-import com.github.paohaijiao.param.JContext;
 
 /**
  * packageName com.paohaijiao.javelin.factory

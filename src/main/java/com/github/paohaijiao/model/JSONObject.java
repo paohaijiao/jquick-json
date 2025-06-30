@@ -17,10 +17,10 @@ package com.github.paohaijiao.model;
 
 import com.github.paohaijiao.anno.JSONField;
 import com.github.paohaijiao.anno.JSONIgnore;
+import com.github.paohaijiao.exception.JAssert;
 import com.github.paohaijiao.mapper.JBeanMapper;
 import com.github.paohaijiao.mapper.JNativeFormatMapper;
 import com.github.paohaijiao.mapper.JNativeMapper;
-import com.github.paohaijiao.exception.JAssert;
 import com.github.paohaijiao.merge.JMergeStrategy;
 import com.github.paohaijiao.merge.impl.JDefaultJsonMerger;
 import com.github.paohaijiao.param.JContext;

@@ -27,9 +27,9 @@ import com.github.paohaijiao.model.JSONObject;
  *
  * @author Martin
  * @version 1.0.0
- * @className JSonMerge
- * @date 2025/6/26
- * @description
+ *  JSonMerge
+ * @since 2025/6/26
+ * 
  */
 public class JSonMerge {
     private static final JsonMerger DEEP_MERGER = new JDefaultJsonMerger().strategy(new JDeepMergeStrategy());

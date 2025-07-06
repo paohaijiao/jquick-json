@@ -28,9 +28,9 @@
 // *
 // * @author Martin
 // * @version 1.0.0
-// * @className DefaultJSONSerializer
-// * @date 2025/6/20
-// * @description
+// *  DefaultJSONSerializer
+// * @since 2025/6/20
+// * 
 // */
 //public class JDefaultJSONSerializer implements JSONSerializer {
 //    private JContext context;

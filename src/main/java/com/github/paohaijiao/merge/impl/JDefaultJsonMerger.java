@@ -25,9 +25,9 @@ import com.github.paohaijiao.model.JSONObject;
  *
  * @author Martin
  * @version 1.0.0
- * @className JDefaultJsonMerger
- * @date 2025/6/26
- * @description
+ *  JDefaultJsonMerger
+ * @since 2025/6/26
+ * 
  */
 public class JDefaultJsonMerger implements JsonMerger {
 

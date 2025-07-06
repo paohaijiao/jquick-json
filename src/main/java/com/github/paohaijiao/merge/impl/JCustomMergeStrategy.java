@@ -26,9 +26,9 @@ import java.util.function.BiFunction;
  *
  * @author Martin
  * @version 1.0.0
- * @className JCustomMergeStrategy
- * @date 2025/6/26
- * @description
+ *  JCustomMergeStrategy
+ * @since 2025/6/26
+ * 
  */
 public class JCustomMergeStrategy implements JMergeStrategy {
     private final BiFunction<JSONObject, JSONObject, JSONObject> objectMerger;

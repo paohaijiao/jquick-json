@@ -24,9 +24,9 @@ import com.github.paohaijiao.model.JSONObject;
  *
  * @author Martin
  * @version 1.0.0
- * @className JShallowMergeStrategy
- * @date 2025/6/26
- * @description
+ *  JShallowMergeStrategy
+ * @since 2025/6/26
+ * 
  */
 public class JShallowMergeStrategy implements JMergeStrategy {
     @Override

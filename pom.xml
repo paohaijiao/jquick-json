@@ -9,29 +9,32 @@
     <groupId>io.github.paohaijiao</groupId>
     <artifactId>jquick-json</artifactId>
     <name>jquick-json</name>
-
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
+            <version>4.13.2</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4</artifactId>
+            <version>4.13.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
+            <version>5.4.2</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.paohaijiao</groupId>
-            <artifactId>javelin-core</artifactId>
+            <version>1.18.30</version>
         </dependency>
         <dependency>
             <groupId>com.github.paohaijiao</groupId>
@@ -39,6 +42,8 @@
             <version>1.0.0</version>
         </dependency>
     </dependencies>
+    <description>jquick json is a completely self-developed lightweight, high-performance json parsing and serialization library that supports the java language, provides a concise and easy-to-use api, and offers ultimate memory performance optimization.</description>
+    <url>https://github.com/paohaijiao/jquick-json</url>
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
@@ -85,6 +90,28 @@
                     <waitUntil>published</waitUntil>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:none</arg>
+                    </compilerArgs>
+                    <failOnError>false</failOnError>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <failOnError>false</failOnError>
+                    <failOnWarnings>false</failOnWarnings>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 </project>

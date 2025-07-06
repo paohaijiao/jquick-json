@@ -24,9 +24,6 @@ import com.github.paohaijiao.serializer.impl.JQuickJSONSerializer;
  *
  * @author Martin
  * @version 1.0.0
- * @className JSONSerializerFactory
- * @date 2025/6/20
- * @description
  */
 public class JSONSerializerFactory {
 

@@ -24,9 +24,9 @@ import lombok.NoArgsConstructor;
  *
  * @author Martin
  * @version 1.0.0
- * @className JUser
- * @date 2025/6/21
- * @description
+ *  JUser
+ * @since 2025/6/21
+ * 
  */
 @Data
 @AllArgsConstructor

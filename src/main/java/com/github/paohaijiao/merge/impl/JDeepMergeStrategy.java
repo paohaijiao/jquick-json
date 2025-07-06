@@ -26,9 +26,9 @@ import java.util.Map;
  *
  * @author Martin
  * @version 1.0.0
- * @className JDeepMergeStrategy
- * @date 2025/6/26
- * @description
+ *  JDeepMergeStrategy
+ * @since 2025/6/26
+ * 
  */
 public class JDeepMergeStrategy implements JMergeStrategy {
     @Override

@@ -3,10 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.paohaijiao</groupId>
-        <artifactId>jquick-parent</artifactId>
-        <version>1.0.0</version>
+        <artifactId>javelin</artifactId>
+        <version>1.2.0</version>
     </parent>
-    <groupId>io.github.paohaijiao</groupId>
     <artifactId>jquick-json</artifactId>
     <name>jquick-json</name>
     <properties>
@@ -17,29 +16,24 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.13.2</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4</artifactId>
-            <version>4.13.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.4.2</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
-            <version>1.18.30</version>
         </dependency>
         <dependency>
-            <groupId>com.github.paohaijiao</groupId>
+            <groupId>io.github.paohaijiao</groupId>
             <artifactId>javelin-core</artifactId>
-            <version>1.0.0</version>
         </dependency>
     </dependencies>
     <description>jquick json is a completely self-developed lightweight, high-performance json parsing and serialization library that supports the java language, provides a concise and easy-to-use api, and offers ultimate memory performance optimization.</description>
@@ -106,10 +100,31 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.3.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <failOnError>false</failOnError>
                     <failOnWarnings>false</failOnWarnings>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>

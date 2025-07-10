@@ -288,6 +288,9 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
     @Override
     public <T> T toBean(Class<T> t) {
         try {
+            if (this instanceof JSONObject && t == JSONObject.class) {
+                return (T) this;
+            }
             T instance = JReflectionUtils.newInstance(t);
             List<Field> fields = JReflectionUtils.getAllFields(t);
             for (Field field : fields) {
@@ -363,6 +366,7 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
                 if (value == null) {
                     json.put(fieldName, null);
                 }
+                System.out.println(value);
                 if (value instanceof Map) {
                     JSONObject object = new JSONObject((Map) value);
                     json.put(fieldName, object);

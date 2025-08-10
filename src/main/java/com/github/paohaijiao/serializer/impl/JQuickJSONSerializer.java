@@ -42,6 +42,7 @@ import java.util.Date;
  * 
  */
 public class JQuickJSONSerializer implements JSONSerializer {
+
     private JContext context;
 
     public JQuickJSONSerializer() {
@@ -86,10 +87,14 @@ public class JQuickJSONSerializer implements JSONSerializer {
             console.log(JLogLevel.INFO, "parse result:" + result);
             if (null == result) {
                 return null;
-            }
-            if (result instanceof JSONObject) {
-                JSONObject jsonObject = (JSONObject) result;
-                return jsonObject.toBean(clazz);
+            }else if (result instanceof JSONObject) {
+                if(clazz== JSONObject.class){
+                  return (T) result;
+                }else {
+                    JSONObject jsonObject = (JSONObject) result;
+                    return jsonObject.toBean(clazz);
+                }
+
             } else if (result instanceof JSONArray) {
                 JSONArray array = (JSONArray) result;
                 if (clazz == JSONArray.class) {

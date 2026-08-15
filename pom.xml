@@ -36,6 +36,11 @@
             <groupId>io.github.paohaijiao</groupId>
             <artifactId>javelin-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.github.paohaijiao</groupId>
+            <artifactId>jquick-asm</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
     <description>jquick json is a completely self-developed lightweight, high-performance json parsing and serialization library that supports the java language, provides a concise and easy-to-use api, and offers ultimate memory performance optimization.</description>
     <url>https://github.com/paohaijiao/jquick-json</url>

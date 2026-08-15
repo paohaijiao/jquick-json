@@ -15,9 +15,10 @@
  */
 package com.github.paohaijiao.model;
 
-import com.github.paohaijiao.anno.JSONField;
-import com.github.paohaijiao.anno.JSONIgnore;
 import com.github.paohaijiao.exception.JAssert;
+import com.github.paohaijiao.mapper.JBeanAccessor;
+import com.github.paohaijiao.mapper.JBeanAccessorFactory;
+import com.github.paohaijiao.mapper.JBeanFieldMeta;
 import com.github.paohaijiao.mapper.JBeanMapper;
 import com.github.paohaijiao.mapper.JNativeFormatMapper;
 import com.github.paohaijiao.mapper.JNativeMapper;
@@ -26,9 +27,7 @@ import com.github.paohaijiao.merge.impl.JDefaultJsonMerger;
 import com.github.paohaijiao.param.JContext;
 import com.github.paohaijiao.support.JSonMerge;
 import com.github.paohaijiao.util.JReflectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -291,39 +290,34 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
             if (this instanceof JSONObject && t == JSONObject.class) {
                 return (T) this;
             }
-            T instance = JReflectionUtils.newInstance(t);
-            List<Field> fields = JReflectionUtils.getAllFields(t);
-            for (Field field : fields) {
-                JSONIgnore ignore = field.getAnnotation(JSONIgnore.class);
-                if (ignore != null) {
+            JBeanAccessor accessor = JBeanAccessorFactory.get(t);
+            T instance = (T) accessor.create();
+            JBeanFieldMeta[] metas = accessor.fields();
+            for (int i = 0; i < metas.length; i++) {
+                JBeanFieldMeta meta = metas[i];
+                if (meta.ignored()) {
                     continue;
                 }
-                String fieldName = field.getName();
-                if (this.containsKey(fieldName)) {
-                    JSONField jsonField = field.getAnnotation(JSONField.class);
-                    String format = null;
-                    if (jsonField != null) {
-                        if (fieldName.equals(jsonField.name())) {
-                            format = jsonField.format();
-                        }
-                    }
-                    Object value = this.get(fieldName);
-                    Class<?> fieldType = field.getType();
-                    if (value instanceof Map && !Map.class.isAssignableFrom(fieldType)) {
-                        JSONObject nestedJson = new JSONObject((Map<String, Object>) value);
-                        value = nestedJson.toBean(fieldType);
-                    } else if (fieldType.isEnum() && value instanceof String) {
-                        value = JReflectionUtils.getEnumByName((Class<? extends Enum>) fieldType, (String) value);
-                    } else if (value != null && !fieldType.isAssignableFrom(value.getClass())) {
-                        if (format == null) {
-                            value = getNativeValue(fieldName, fieldType, value);
-                        } else {
-                            value = getNativeForMatValue(fieldName, fieldType, value, format);
-                        }
-
-                    }
-                    JReflectionUtils.setFieldValue(instance, fieldName, value);
+                String fieldName = meta.fieldName();
+                if (!this.containsKey(fieldName)) {
+                    continue;
                 }
+                Object value = this.get(fieldName);
+                Class<?> fieldType = meta.type();
+                String format = meta.toBeanFormat();
+                if (value instanceof Map && !Map.class.isAssignableFrom(fieldType)) {
+                    JSONObject nestedJson = new JSONObject((Map<String, Object>) value);
+                    value = nestedJson.toBean(fieldType);
+                } else if (fieldType.isEnum() && value instanceof String) {
+                    value = JReflectionUtils.getEnumByName((Class<? extends Enum>) fieldType, (String) value);
+                } else if (value != null && !fieldType.isAssignableFrom(value.getClass())) {
+                    if (format == null) {
+                        value = getNativeValue(fieldName, fieldType, value);
+                    } else {
+                        value = getNativeForMatValue(fieldName, fieldType, value, format);
+                    }
+                }
+                accessor.set(instance, i, value);
             }
 
             return instance;
@@ -342,105 +336,43 @@ public class JSONObject extends JSONBaseObject implements Map<String, Object>, J
         if (bean == null) {
             return new JSONObject();
         }
+        JBeanAccessor accessor = JBeanAccessorFactory.get(bean.getClass());
+        JBeanFieldMeta[] metas = accessor.fields();
         JSONObject json = new JSONObject();
-        List<Field> fields = JReflectionUtils.getAllFields(bean.getClass());
-        for (Field field : fields) {
-            try {
-                field.setAccessible(true);
-                Object value = field.get(bean);
-                JSONIgnore ignore = field.getAnnotation(JSONIgnore.class);
-                if (ignore != null) {
-                    continue;
-                }
-                String fieldName = field.getName();
-                JSONField jsonField = field.getAnnotation(JSONField.class);
-                String format = null;
-                if (jsonField != null) {
-                    if (!StringUtils.isEmpty(jsonField.name())) {
-                        fieldName = jsonField.name();
-                    }
-                    if (!StringUtils.isEmpty(jsonField.format())) {
-                        format = jsonField.format();
-                    }
-                }
-                if (value == null) {
-                    json.put(fieldName, null);
-                }
-                System.out.println(value);
-                if (value instanceof Map) {
-                    JSONObject object = new JSONObject((Map) value);
-                    json.put(fieldName, object);
-                } else if (value.getClass().isArray() || (value instanceof Collection)) {
-                    List<?> list = convertToList(value);
-                    JSONArray array = new JSONArray(list);
-                    json.put(fieldName, array);
-                } else if (value instanceof Collection) {
-                    List<Object> list = new ArrayList<>();
-                    for (Object item : (Collection<?>) value) {
-                        list.add(fromBean(item));
-                    }
-                    json.put(fieldName, list);
-                } else if (value instanceof BigDecimal) {
-                    if (format == null) {
-                        json.put(fieldName, value);
-                    } else {
-                        json.put(fieldName, getBigDecimal(format, value));
-                    }
-                } else if (value instanceof Float) {
-                    if (format == null) {
-                        json.put(fieldName, value);
-                    } else {
-                        json.put(fieldName, getFloat(format, value));
-                    }
-                } else if (value instanceof Double) {
-                    if (format == null) {
-                        json.put(fieldName, value);
-                    } else {
-                        json.put(fieldName, getDouble(format, value));
-                    }
-                } else if (value instanceof Date) {
-                    if (format == null) {
-                        json.put(fieldName, value);
-                    } else {
-                        json.put(fieldName, getDate(format, value));
-                    }
-                } else if (value instanceof Integer) {
-                    if (format == null) {
-                        json.put(fieldName, value);
-                    } else {
-                        json.put(fieldName, getInteger(format, value));
-                    }
-                } else if (value instanceof Long) {
-                    if (format == null) {
-                        json.put(fieldName, value);
-                    } else {
-                        json.put(fieldName, getLong(format, value));
-                    }
-                } else if (value instanceof Boolean) {
-                    if (format == null) {
-                        json.put(fieldName, value);
-                    } else {
-                        json.put(fieldName, getBoolean(format, value));
-                    }
-                } else if (value instanceof Date) {
-                    if (format == null) {
-                        json.put(fieldName, value);
-                    } else {
-                        json.put(fieldName, getDate(format, value));
-                    }
-                } else if (value instanceof String) {
-                    if (format == null) {
-                        json.put(fieldName, getValue(value));
-                    } else {
-                        json.put(fieldName, getString(format, value));
-                    }
-                } else {//
-                    String fieldNameStr = field.getName();
-                    JSONObject obj = fromBean(value);
-                    json.put(fieldName, obj);
-                }
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Failed to convert bean to JSON", e);
+        for (int i = 0; i < metas.length; i++) {
+            JBeanFieldMeta meta = metas[i];
+            if (meta.ignored()) {
+                continue;
+            }
+            Object value = accessor.get(bean, i);
+            String fieldName = meta.jsonName();
+            String format = meta.format();
+            if (value == null) {
+                json.put(fieldName, null);
+                continue;
+            }
+            if (value instanceof Map) {
+                json.put(fieldName, new JSONObject((Map) value));
+            } else if (value.getClass().isArray() || (value instanceof Collection)) {
+                json.put(fieldName, new JSONArray(convertToList(value)));
+            } else if (value instanceof BigDecimal) {
+                json.put(fieldName, format == null ? value : getBigDecimal(format, value));
+            } else if (value instanceof Float) {
+                json.put(fieldName, format == null ? value : getFloat(format, value));
+            } else if (value instanceof Double) {
+                json.put(fieldName, format == null ? value : getDouble(format, value));
+            } else if (value instanceof Date) {
+                json.put(fieldName, format == null ? value : getDate(format, value));
+            } else if (value instanceof Integer) {
+                json.put(fieldName, format == null ? value : getInteger(format, value));
+            } else if (value instanceof Long) {
+                json.put(fieldName, format == null ? value : getLong(format, value));
+            } else if (value instanceof Boolean) {
+                json.put(fieldName, format == null ? value : getBoolean(format, value));
+            } else if (value instanceof String) {
+                json.put(fieldName, format == null ? getValue(value) : getString(format, value));
+            } else {
+                json.put(fieldName, fromBean(value));
             }
         }
 

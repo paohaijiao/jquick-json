@@ -4,9 +4,10 @@
     <parent>
         <groupId>io.github.paohaijiao</groupId>
         <artifactId>javelin</artifactId>
-        <version>1.2.0</version>
+        <version>1.3.0</version>
     </parent>
     <artifactId>jquick-json</artifactId>
+    <version>1.3.0</version>
     <name>jquick-json</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

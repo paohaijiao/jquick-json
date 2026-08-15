@@ -3,16 +3,15 @@ package com.github.paohaijiao;
 import com.github.paohaijiao.factory.JSONSerializerFactory;
 import com.github.paohaijiao.mapper.JBeanAccessor;
 import com.github.paohaijiao.mapper.JBeanAccessorFactory;
-import com.github.paohaijiao.model.JSONObject;
+import com.github.paohaijiao.mapper.JBeanFieldMeta;
+import com.github.paohaijiao.mapper.JReflectionBeanAccessor;
 import com.github.paohaijiao.serializer.JSONSerializer;
-import com.github.paohaijiao.util.JReflectionUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -116,39 +115,56 @@ public class JBeanAccessorTest {
         assertEquals(25, getNoAccessorField(back, "age"));
     }
 
+    /** 消费读到的值，防止 JIT 消除循环体 */
+    private long sink;
+
     @Test
-    public void testPerformanceSmoke() throws Exception {
+    public void testPerformanceSmoke() {
         JSONSerializer serializer = JSONSerializerFactory.getDefaultSerializer();
         SimpleBean bean = new SimpleBean("Martin", 30, 7, true, 123456789L);
+        String json = serializer.serialize(bean);
         for (int i = 0; i < 1000; i++) {
             serializer.serialize(bean);
         }
-        String json = serializer.serialize(bean);
-        int iterations = 20000;
-        long t0 = System.nanoTime();
-        for (int i = 0; i < iterations; i++) {
-            new JSONObject().fromBean(bean);
-        }
-        long asmNanos = System.nanoTime() - t0;
-        t0 = System.nanoTime();
-        for (int i = 0; i < iterations; i++) {
-            serializer.deserialize(json, SimpleBean.class);
-        }
-        long asmDeserNanos = System.nanoTime() - t0;
-        List<Field> fields = JReflectionUtils.getAllFields(bean.getClass());
-        t0 = System.nanoTime();
-        for (int i = 0; i < iterations; i++) {
-            JSONObject jsonObj = new JSONObject();
-            for (Field field : fields) {
-                field.setAccessible(true);
-                jsonObj.put(field.getName(), field.get(bean));
+        JBeanAccessor bytecode = JBeanAccessorFactory.get(SimpleBean.class);
+        JBeanFieldMeta[] metas = bytecode.fields();
+        JBeanAccessor reflection = new JReflectionBeanAccessor(SimpleBean.class, metas,
+                SimpleBean.class.getDeclaredFields());
+
+        // 预热两条路径，确保 JIT 编译完成后才计时
+        for (int i = 0; i < 5000; i++) {
+            for (int j = 0; j < metas.length; j++) {
+                sink += reflection.get(bean, j).hashCode();
+                sink += bytecode.get(bean, j).hashCode();
             }
         }
-        long reflectionNanos = System.nanoTime() - t0;
-        System.out.printf("fromBean 反射: %,d ns | fromBean 字节码: %,d ns | 加速比: %.1fx%n", reflectionNanos, asmNanos, (double) reflectionNanos / asmNanos);
-        System.out.printf("deserialize 字节码: %,d ns / %d 次%n", asmDeserNanos, iterations);
+
+        int iterations = 20000;
+        long reflectionNanos = time(() -> {
+            for (int i = 0; i < metas.length; i++) {
+                sink += reflection.get(bean, i).hashCode();
+            }
+        }, iterations);
+        long asmNanos = time(() -> {
+            for (int i = 0; i < metas.length; i++) {
+                sink += bytecode.get(bean, i).hashCode();
+            }
+        }, iterations);
+        long deserNanos = time(() -> sink += serializer.deserialize(json, SimpleBean.class).getName().length(), 2000);
+        System.out.printf("accessor.get 反射: %,d ns | 字节码: %,d ns | 加速比: %.1fx%n",
+                reflectionNanos, asmNanos, (double) reflectionNanos / asmNanos);
+        System.out.printf("deserialize 字节码: %,d ns / %d 次%n", deserNanos, 2000);
         assertTrue(asmNanos > 0);
         assertTrue(reflectionNanos > 0);
+        assertTrue(deserNanos > 0);
+    }
+
+    private static long time(Runnable task, int iterations) {
+        long t0 = System.nanoTime();
+        for (int i = 0; i < iterations; i++) {
+            task.run();
+        }
+        return System.nanoTime() - t0;
     }
 
     @Data

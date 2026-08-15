@@ -15,8 +15,6 @@
  */
 package com.github.paohaijiao.model;
 
-import com.github.paohaijiao.console.JConsole;
-import com.github.paohaijiao.enums.JLogLevel;
 import com.github.paohaijiao.exception.JAntlrExecutionException;
 import com.github.paohaijiao.executor.JSONExecutor;
 import com.github.paohaijiao.merge.JMergeStrategy;
@@ -237,8 +235,6 @@ public class JSONArray implements List<Object> {
         });
         try {
             Object result = executor.execute(json);
-            JConsole console = new JConsole();
-            console.log(JLogLevel.INFO, "parse result:" + result);
             List<?> list = JObjectConverter.assign(result, List.class);
             return new JSONArray(list);
         } catch (JAntlrExecutionException e) {

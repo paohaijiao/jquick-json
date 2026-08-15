@@ -122,7 +122,7 @@ String json = serializer.serialize(user);
 
 # **性能优化**
 
-自 `1.3.0` 起，POJO 与 JSON 之间的互转（`toBean` / `fromBean`）默认基于 [jquick-asm](https://github.com/paohaijiao/jquick-asm) 动态字节码生成，核心优化点：
+自 `1.4.0` 起，POJO 与 JSON 之间的互转（`toBean` / `fromBean`）默认基于 [jquick-asm](https://github.com/paohaijiao/jquick-asm) 动态字节码生成，核心优化点：
 
 - **字节码 Bean 访问器**：首次使用某个类型时，用 jquick-asm 在运行时生成一个访问器类（命名空间 `com.github.paohaijiao.mapper.gen.*`），将字段读写编译为直接的 getter/setter 调用（`INVOKEVIRTUAL`），彻底替代逐字段反射，且每个类型只生成一次并缓存。
 - **反射兜底**：类型无公共无参构造器、字段缺少 getter/setter、或为接口/抽象类时，自动回退到反射实现（`JReflectionBeanAccessor`），功能与行为不受影响。

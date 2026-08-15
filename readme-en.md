@@ -122,7 +122,7 @@ String json = serializer.serialize(user);
 
 # **Performance**
 
-Since `1.3.0`, the conversion between POJOs and JSON (`toBean` / `fromBean`) is built on dynamic bytecode generation with [jquick-asm](https://github.com/paohaijiao/jquick-asm). Key optimizations:
+Since `1.4.0`, the conversion between POJOs and JSON (`toBean` / `fromBean`) is built on dynamic bytecode generation with [jquick-asm](https://github.com/paohaijiao/jquick-asm). Key optimizations:
 
 - **Bytecode Bean Accessor**: on first use of a type, jquick-asm generates an accessor class at runtime (namespace `com.github.paohaijiao.mapper.gen.*`), compiling field reads/writes into direct getter/setter calls (`INVOKEVIRTUAL`) instead of per-field reflection. Each type is generated only once and cached.
 - **Reflection Fallback**: types without a public no-arg constructor, fields without getters/setters, interfaces, or abstract classes automatically fall back to the reflection implementation (`JReflectionBeanAccessor`) with identical behavior.

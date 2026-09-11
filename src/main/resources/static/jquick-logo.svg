@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="280" height="240">
   <!-- 纯白背景 -->
-  <rect width="240" height="240" fill="#ffffff"/>
+  <rect width="1007" height="928" fill="#ffffff"/>
 
   <!-- 外层金色能量六边形 -->
   <polygon points="120,22 206,68 206,172 120,218 34,172 34,68"

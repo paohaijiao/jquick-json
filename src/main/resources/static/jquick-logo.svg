@@ -60,14 +60,6 @@
         font-size="9"
         fill="#FF7A1A"
         letter-spacing="0.3">
-jquick-curl · jquick-excel · jquick-pdf · jquick-java · jquick-sql
-  </text>
-  <text x="120" y="250"
-        text-anchor="middle"
-        font-family="Arial, sans-serif"
-        font-size="7"
-        fill="#FF7A1A"
-        letter-spacing="0.1">
-    copyright@paohaijiao email:goudingcheng@gmail.com
+    Declarative Configuration Components
   </text>
 </svg>

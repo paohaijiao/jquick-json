@@ -1,3 +1,7 @@
+<p align="center">
+<img src="./src/main/resources/static/jquick-logo.svg" width="180" alt="JQuick Logo" />
+</p>
+
 # jquick json 文档
 简体中文 | [英文](./readme-en.md)
 ```string

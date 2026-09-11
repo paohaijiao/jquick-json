@@ -1,5 +1,5 @@
 <p align="center">
-<img src="./src/main/resources/static/jquick-logo.svg" width="180" alt="JQuick Logo" />
+<img src="./src/main/resources/static/jquick-logo.svg" width="700" alt="JQuick Logo" />
 </p>
 
 # jquick json Document
